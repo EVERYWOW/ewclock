@@ -8,7 +8,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Keep the background pure black and the time pure white.
 - Keep the time centered and horizontal in every orientation.
 - Size the complete time to 90% of the current screen or window width.
-- Render hours, minutes, and seconds in fixed two-character slots sized for `88`, with fixed colon slots, so digit changes do not move the layout.
+- Render hours, minutes, and seconds in fixed two-character slots sized for the widest measured ASCII value from `00` through `99`, with fixed colon slots, so digit changes do not move the layout.
 - Use `EWClock/Resources/EVERYWOWDisplayVF.ttf` at variable weight 900. Its runtime PostScript instance is `EVERYWOWDisplay-Black`. EVERYWOW AG has authorized this font only for EVERYWOW’s app.
 - Keep the display awake while the clock is active. Restore normal idle behavior when the iPhone or iPad scene becomes inactive, and end the Mac assertion when the app terminates.
 - Support portrait and landscape on iPhone and iPad. Set `UIRequiresFullScreen = true`, apply `.persistentSystemOverlays(.hidden)`, and accept iPadOS 26 windowed mode.
@@ -16,7 +16,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Open a normal resizable Mac window. Do not enter macOS full screen automatically.
 - Add no controls, settings, gestures, networking, analytics, persistence, or unrelated features.
 - Store the company-logo icon at `EWClock/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png`. It was copied from `/Users/steffi/dev/ewtools/scripts/assets/everywow-favicon.png`; the repository copy is the source of truth.
-- Calculate width as three measured `88` advances plus two colon advances, with zero implicit stack spacing or horizontal padding, scaled to `0.9 × available width`.
+- Calculate width as three maximum measured `00` through `99` advances plus two colon advances, with zero implicit stack spacing or horizontal padding, scaled to `0.9 × available width`.
 
 ## Identifiers
 

@@ -41,39 +41,19 @@ struct ClockView: View {
         time: ClockTime,
         availableWidth: CGFloat
     ) -> some View {
-        let fontSize = ClockTypography.fontSize(
+        let layout = ClockTypography.layout(
             availableWidth: availableWidth,
             metrics: metrics
         )
-        let scale = fontSize / metrics.referenceSize
-        let segmentWidth = metrics.segmentAdvance * scale
-        let colonWidth = metrics.colonAdvance * scale
 
-        return HStack(spacing: 0) {
-            segment(time.hours, width: segmentWidth, fontSize: fontSize)
-            colon(width: colonWidth, fontSize: fontSize)
-            segment(time.minutes, width: segmentWidth, fontSize: fontSize)
-            colon(width: colonWidth, fontSize: fontSize)
-            segment(time.seconds, width: segmentWidth, fontSize: fontSize)
+        return Canvas { context, size in
+            let glyphPath = ClockTypography.glyphPath(
+                segments: time.segments,
+                layout: layout,
+                canvasSize: size,
+                fontName: BrandFont.postScriptName
+            )
+            context.fill(Path(glyphPath), with: .color(.white))
         }
-        .foregroundStyle(Color.white)
-    }
-
-    private func segment(
-        _ value: String,
-        width: CGFloat,
-        fontSize: CGFloat
-    ) -> some View {
-        Text(value)
-            .font(.custom(BrandFont.postScriptName, fixedSize: fontSize))
-            .lineLimit(1)
-            .frame(width: width)
-    }
-
-    private func colon(width: CGFloat, fontSize: CGFloat) -> some View {
-        Text(":")
-            .font(.custom(BrandFont.postScriptName, fixedSize: fontSize))
-            .lineLimit(1)
-            .frame(width: width)
     }
 }

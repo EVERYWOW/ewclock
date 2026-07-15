@@ -34,7 +34,7 @@ The time always stays horizontal. Its complete typographic advance width is 90% 
 
 The display uses EVERYWOW Display at variable weight 900, which the font identifies as Black. The bundled source is `EVERYWOWDisplayVF.ttf` from the EVERYWOW website. EVERYWOW AG has authorized its use for this app.
 
-Hours, minutes, and seconds are three separate two-character segments. Each segment reserves the advance width of `88` and centers its current value within that width. Two fixed colon slots separate the segments. The reference run is exactly three measured `88` advances plus two measured colon advances, with zero implicit stack spacing or horizontal padding. The font size scales this complete run to `0.9 × available width`. This keeps the layout fixed as the digits change.
+Hours, minutes, and seconds are three separate two-character segments. Each segment reserves the maximum advance measured across every ASCII value from `00` through `99` and centers its current value within that width. In the approved font, `00`, `04`, `40`, and `44` share the maximum advance. Two fixed colon slots separate the segments. The reference run is exactly three maximum segment advances plus two measured colon advances, with zero implicit stack spacing or horizontal padding. The font size scales this complete run to `0.9 × available width`. This keeps the layout fixed as the digits change.
 
 ## Timekeeping
 

@@ -57,7 +57,7 @@ struct ClockTimeTests {
 
 @Suite("Clock typography")
 struct ClockTypographyTests {
-    @Test("The reference run is three 88 advances plus two colon advances")
+    @Test("The reference run uses three maximum segment advances and two colons")
     func widthEquation() throws {
         try BrandFont.register()
         let metrics = ClockTypography.metrics(
@@ -95,10 +95,18 @@ struct ClockTypographyTests {
             referenceSize: referenceSize
         )
 
-        #expect(
-            abs(metrics.segmentAdvance - measuredAdvance(of: "88", in: font))
-                < 0.000_001
-        )
+        let measurements = (0...99).map { value in
+            let text = twoDigits(value)
+            return (text: text, advance: measuredAdvance(of: text, in: font))
+        }
+        let maximumAdvance = measurements.map(\.advance).max()!
+        let widestSegments = measurements
+            .filter { abs($0.advance - maximumAdvance) < 0.000_001 }
+            .map(\.text)
+
+        #expect(abs(metrics.segmentAdvance - maximumAdvance) < 0.000_001)
+        #expect(metrics.widestSegment == "00")
+        #expect(widestSegments == ["00", "04", "40", "44"])
         #expect(
             abs(metrics.colonAdvance - measuredAdvance(of: ":", in: font))
                 < 0.000_001
@@ -113,6 +121,61 @@ struct ClockTypographyTests {
         let resolvedName = CTFontCopyPostScriptName(font) as String
 
         #expect(resolvedName == BrandFont.postScriptName)
+    }
+
+    @Test("Every two-character value uses the same fixed slot centers")
+    func everyValueUsesFixedSlotCenters() throws {
+        try BrandFont.register()
+        let metrics = ClockTypography.metrics(
+            fontName: BrandFont.postScriptName,
+            referenceSize: 100
+        )
+        let layout = ClockTypography.layout(
+            availableWidth: 1_000,
+            metrics: metrics
+        )
+        let expectedCenters = layout
+            .slots(for: ["00", "00", "00"])
+            .map(\.centerX)
+        let font = CTFontCreateWithName(
+            BrandFont.postScriptName as CFString,
+            metrics.referenceSize,
+            nil
+        )
+
+        for value in 0...99 {
+            let text = twoDigits(value)
+            let slots = layout.slots(for: [text, text, text])
+            let path = ClockTypography.glyphPath(
+                segments: [text, text, text],
+                layout: layout,
+                canvasSize: CGSize(width: 1_000, height: 400),
+                fontName: BrandFont.postScriptName
+            )
+            let pathBounds = path.boundingBoxOfPath
+
+            #expect(
+                measuredAdvance(of: text, in: font)
+                    <= metrics.segmentAdvance
+            )
+            #expect(slots.map(\.text) == [text, ":", text, ":", text])
+            #expect(slots.map(\.centerX) == expectedCenters)
+            #expect(!path.isEmpty)
+            #expect(pathBounds.minX >= 50)
+            #expect(pathBounds.maxX <= 950)
+            #expect(pathBounds.minY >= 0)
+            #expect(pathBounds.maxY <= 400)
+        }
+
+        #expect(abs(layout.runWidth - 900) < 0.000_001)
+    }
+
+    private func twoDigits(_ value: Int) -> String {
+        String(
+            format: "%02d",
+            locale: Locale(identifier: "en_US_POSIX"),
+            value
+        )
     }
 
     private func measuredAdvance(of text: String, in font: CTFont) -> CGFloat {

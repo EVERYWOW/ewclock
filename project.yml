@@ -33,6 +33,8 @@ targets:
       path: build/generated/EWClock-iOS-Info.plist
       properties:
         CFBundleDisplayName: EW Clock
+        UIStatusBarHidden: true
+        UIViewControllerBasedStatusBarAppearance: false
         UILaunchScreen:
           UIColorName: LaunchBackground
         UIRequiresFullScreen: true
