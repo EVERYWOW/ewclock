@@ -65,8 +65,6 @@ struct ClockTypographyTests {
             referenceSize: 100
         )
 
-        #expect(metrics.segmentAdvance > 0)
-        #expect(metrics.colonAdvance > 0)
         #expect(
             metrics.referenceAdvance
                 == (3 * metrics.segmentAdvance) + (2 * metrics.colonAdvance)
@@ -83,6 +81,30 @@ struct ClockTypographyTests {
         #expect(abs(scaledReferenceAdvance - (0.9 * availableWidth)) < 0.000_001)
     }
 
+    @Test("Metrics match independent CoreText line measurements")
+    func metricsMatchMeasuredAdvances() throws {
+        try BrandFont.register()
+        let referenceSize = 100.0
+        let font = CTFontCreateWithName(
+            BrandFont.postScriptName as CFString,
+            referenceSize,
+            nil
+        )
+        let metrics = ClockTypography.metrics(
+            fontName: BrandFont.postScriptName,
+            referenceSize: referenceSize
+        )
+
+        #expect(
+            abs(metrics.segmentAdvance - measuredAdvance(of: "88", in: font))
+                < 0.000_001
+        )
+        #expect(
+            abs(metrics.colonAdvance - measuredAdvance(of: ":", in: font))
+                < 0.000_001
+        )
+    }
+
     @Test("Registration exposes the approved PostScript instance")
     func approvedFontIsRegistered() throws {
         try BrandFont.register()
@@ -91,5 +113,16 @@ struct ClockTypographyTests {
         let resolvedName = CTFontCopyPostScriptName(font) as String
 
         #expect(resolvedName == BrandFont.postScriptName)
+    }
+
+    private func measuredAdvance(of text: String, in font: CTFont) -> CGFloat {
+        let fontAttribute = NSAttributedString.Key(kCTFontAttributeName as String)
+        let attributedText = NSAttributedString(
+            string: text,
+            attributes: [fontAttribute: font]
+        )
+        let line = CTLineCreateWithAttributedString(attributedText)
+
+        return CTLineGetTypographicBounds(line, nil, nil, nil)
     }
 }
