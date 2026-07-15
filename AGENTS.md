@@ -28,8 +28,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Initial release: version `1.0`
 - Initial build number: `1`
 - Internal TestFlight group: `EVERYWOW Internal`
-- External TestFlight group: `EVERYWOW Public Beta`
-- Public TestFlight link: `https://testflight.apple.com/join/PGJ161tP`
+- Internal TestFlight tester: `apps@everywow.ch`
 - TestFlight feedback and beta-review email: `apps@everywow.ch`
 
 Never commit Apple credentials, App Store Connect keys, provisioning profiles, or signing private keys.
@@ -62,7 +61,7 @@ Stefanie works across computers. Keep `main` synchronized and preserve unrelated
 - Increase `CURRENT_PROJECT_VERSION` for every uploaded build.
 - Verify both uploaded builds finish processing before adding them to `EVERYWOW Internal`.
 - Internal testers must already be App Store Connect users. Ask before granting any new App Store Connect role solely to make someone eligible for internal testing.
-- External testers use `EVERYWOW Public Beta` and its public link. External builds require TestFlight Beta App Review, but must never be submitted for App Store review unless Stefanie explicitly changes the distribution scope.
+- EW Clock currently uses internal-only TestFlight distribution. External builds require TestFlight Beta App Review and must not be submitted unless Stefanie explicitly changes the distribution scope again.
 
 ## Current TestFlight State
 
@@ -70,9 +69,8 @@ As of 15 July 2026:
 
 - App Store Connect record `EW Clock` exists with Apple ID `6791122125` for iOS/iPadOS and macOS.
 - Version `1.0`, build `1` uploaded successfully for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`.
-- The internal group `EVERYWOW Internal` has automatic distribution enabled and contains both builds, but has no testers. The requested addresses were not eligible internal users, and no App Store Connect roles were granted.
-- The external group `EVERYWOW Public Beta` contains both builds. Both builds are `Waiting for Review` in TestFlight Beta App Review.
-- The public link is enabled and open to anyone without a tester limit: `https://testflight.apple.com/join/PGJ161tP`. Testers cannot join until Apple approves at least one build.
+- The internal group `EVERYWOW Internal` has automatic distribution enabled, contains both builds, and has `apps@everywow.ch` as its internal tester.
+- The former external group `EVERYWOW Public Beta` was removed, its public link was disabled, and both platform builds were withdrawn from TestFlight Beta App Review. Their external status is `Ready to Submit`, while they remain immediately available to the internal group.
 - Nothing has been submitted to App Store review or configured for App Store release.
 
 The approved design is in `docs/superpowers/specs/2026-07-15-ew-clock-design.md`.
