@@ -7,35 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		100B60ADEAA6081A9F37E84C /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C63436C0670E0F7CEB7149E /* ClockView.swift */; };
 		1A469C302A33CF77EC291D09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C751584BF5C2C30EAED44EE /* Assets.xcassets */; };
 		24E6E276CCD22AA0842E6CB0 /* BrandFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48B0E33CE1DEBAE7570A82C /* BrandFont.swift */; };
 		34E9180F4F6977688D05E3EC /* ClockTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77907F2F9C2E7FD3A19058B1 /* ClockTime.swift */; };
+		365078E031744A98619E4501 /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C63436C0670E0F7CEB7149E /* ClockView.swift */; };
+		36A39ADE91820FCAC1CE3750 /* MacDisplaySleepController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1019606F43CEF0EFAAABE38 /* MacDisplaySleepController.swift */; };
 		507A666450D66F7C6587D6AD /* BrandFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48B0E33CE1DEBAE7570A82C /* BrandFont.swift */; };
 		6311AB21138F5E3F250CA862 /* ClockTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3193C991919F6928E5EA158 /* ClockTypography.swift */; };
 		67E3351CE9D850C6A12C6D7B /* ClockTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77907F2F9C2E7FD3A19058B1 /* ClockTime.swift */; };
 		88EA6680283CE0FBB583E44E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C751584BF5C2C30EAED44EE /* Assets.xcassets */; };
 		9241666C8DA3013592CCD52E /* EVERYWOWDisplayVF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EED69818059E2E95C9356228 /* EVERYWOWDisplayVF.ttf */; };
 		9F59DE5CA8851A963978723C /* ClockTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3193C991919F6928E5EA158 /* ClockTypography.swift */; };
+		A5FB151426BB73CD78BD9881 /* ClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C63436C0670E0F7CEB7149E /* ClockView.swift */; };
 		B033A73FE5D8D842414CC411 /* BrandFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48B0E33CE1DEBAE7570A82C /* BrandFont.swift */; };
 		B3DD5A6A507E8C440C71D21F /* EVERYWOWDisplayVF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EED69818059E2E95C9356228 /* EVERYWOWDisplayVF.ttf */; };
 		BD6055211CF119AB02481DD4 /* ClockTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3193C991919F6928E5EA158 /* ClockTypography.swift */; };
 		BDA55C6EAD70C2D9DC3AD794 /* ClockTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77907F2F9C2E7FD3A19058B1 /* ClockTime.swift */; };
 		C4ABEFAC0C3E5CDADABB5930 /* ClockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2228ACE3088DAF75370D7C98 /* ClockTests.swift */; };
 		CBF51C4586EEDA2580FFA2F5 /* EVERYWOWDisplayVF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EED69818059E2E95C9356228 /* EVERYWOWDisplayVF.ttf */; };
+		CE25FC13F929005ED5923537 /* EWClockIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36298969CD78A463813F8DFF /* EWClockIOSApp.swift */; };
+		D3E03FEB8E64D4598F00A82F /* IOSDisplaySleepController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F486EE031E1CDCC326EF4 /* IOSDisplaySleepController.swift */; };
+		E3A5D49A523666BF8D4859CA /* EWClockMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED67DB92FD88BD9A3F3281C9 /* EWClockMacApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2228ACE3088DAF75370D7C98 /* ClockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockTests.swift; sourceTree = "<group>"; };
+		36298969CD78A463813F8DFF /* EWClockIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EWClockIOSApp.swift; sourceTree = "<group>"; };
 		3C751584BF5C2C30EAED44EE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		4A7C95174AB368368EB4468B /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
+		4C63436C0670E0F7CEB7149E /* ClockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockView.swift; sourceTree = "<group>"; };
 		531609A2FBB8583ACBBCDE60 /* EWClock-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "EWClock-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F7F486EE031E1CDCC326EF4 /* IOSDisplaySleepController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSDisplaySleepController.swift; sourceTree = "<group>"; };
 		77907F2F9C2E7FD3A19058B1 /* ClockTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockTime.swift; sourceTree = "<group>"; };
 		A271A1E808B27E0D199FC28D /* EWClockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EWClockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3067BDDE6786F4B227869DD /* EWClockMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EWClockMac.entitlements; sourceTree = "<group>"; };
 		BCFCD0BCC6F41543AE09D17A /* EWClock-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EWClock-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1019606F43CEF0EFAAABE38 /* MacDisplaySleepController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDisplaySleepController.swift; sourceTree = "<group>"; };
 		E48B0E33CE1DEBAE7570A82C /* BrandFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandFont.swift; sourceTree = "<group>"; };
+		ED67DB92FD88BD9A3F3281C9 /* EWClockMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EWClockMacApp.swift; sourceTree = "<group>"; };
 		EED69818059E2E95C9356228 /* EVERYWOWDisplayVF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EVERYWOWDisplayVF.ttf; sourceTree = "<group>"; };
 		F3193C991919F6928E5EA158 /* ClockTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockTypography.swift; sourceTree = "<group>"; };
-		FB7EC85260744E14825395AA /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -50,7 +61,8 @@
 		1628FC665031DA2BF6CAF0F5 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				4A7C95174AB368368EB4468B /* .gitkeep */,
+				36298969CD78A463813F8DFF /* EWClockIOSApp.swift */,
+				6F7F486EE031E1CDCC326EF4 /* IOSDisplaySleepController.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -88,7 +100,9 @@
 		882875CACCA46F7E712A664C /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				FB7EC85260744E14825395AA /* .gitkeep */,
+				B3067BDDE6786F4B227869DD /* EWClockMac.entitlements */,
+				ED67DB92FD88BD9A3F3281C9 /* EWClockMacApp.swift */,
+				E1019606F43CEF0EFAAABE38 /* MacDisplaySleepController.swift */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -108,6 +122,7 @@
 				E48B0E33CE1DEBAE7570A82C /* BrandFont.swift */,
 				77907F2F9C2E7FD3A19058B1 /* ClockTime.swift */,
 				F3193C991919F6928E5EA158 /* ClockTypography.swift */,
+				4C63436C0670E0F7CEB7149E /* ClockView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -249,6 +264,9 @@
 				B033A73FE5D8D842414CC411 /* BrandFont.swift in Sources */,
 				67E3351CE9D850C6A12C6D7B /* ClockTime.swift in Sources */,
 				6311AB21138F5E3F250CA862 /* ClockTypography.swift in Sources */,
+				365078E031744A98619E4501 /* ClockView.swift in Sources */,
+				E3A5D49A523666BF8D4859CA /* EWClockMacApp.swift in Sources */,
+				36A39ADE91820FCAC1CE3750 /* MacDisplaySleepController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +277,9 @@
 				507A666450D66F7C6587D6AD /* BrandFont.swift in Sources */,
 				34E9180F4F6977688D05E3EC /* ClockTime.swift in Sources */,
 				9F59DE5CA8851A963978723C /* ClockTypography.swift in Sources */,
+				100B60ADEAA6081A9F37E84C /* ClockView.swift in Sources */,
+				CE25FC13F929005ED5923537 /* EWClockIOSApp.swift in Sources */,
+				D3E03FEB8E64D4598F00A82F /* IOSDisplaySleepController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +291,7 @@
 				C4ABEFAC0C3E5CDADABB5930 /* ClockTests.swift in Sources */,
 				BDA55C6EAD70C2D9DC3AD794 /* ClockTime.swift in Sources */,
 				BD6055211CF119AB02481DD4 /* ClockTypography.swift in Sources */,
+				A5FB151426BB73CD78BD9881 /* ClockView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +368,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "build/generated/EWClock-iOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -355,6 +378,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ch.everywow.clock;
 				PRODUCT_NAME = "EW Clock";
 				SDKROOT = iphoneos;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -363,8 +387,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = EWClock/macOS/EWClockMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "build/generated/EWClock-macOS-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -374,6 +401,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ch.everywow.clock;
 				PRODUCT_NAME = "EW Clock";
 				SDKROOT = macosx;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Debug;
 		};
@@ -459,6 +487,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "build/generated/EWClock-iOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -468,6 +497,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ch.everywow.clock;
 				PRODUCT_NAME = "EW Clock";
 				SDKROOT = iphoneos;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -476,8 +506,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = EWClock/macOS/EWClockMac.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "build/generated/EWClock-macOS-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -487,6 +520,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ch.everywow.clock;
 				PRODUCT_NAME = "EW Clock";
 				SDKROOT = macosx;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};
