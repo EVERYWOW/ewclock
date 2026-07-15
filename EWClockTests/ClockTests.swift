@@ -57,7 +57,7 @@ struct ClockTimeTests {
 
 @Suite("Clock typography")
 struct ClockTypographyTests {
-    @Test("The reference run uses three maximum segment advances and two colons")
+    @Test("The first line uses 98 percent width and seconds use two-thirds size")
     func widthEquation() throws {
         try BrandFont.register()
         let metrics = ClockTypography.metrics(
@@ -66,19 +66,40 @@ struct ClockTypographyTests {
         )
 
         #expect(
-            metrics.referenceAdvance
-                == (3 * metrics.segmentAdvance) + (2 * metrics.colonAdvance)
+            metrics.mainReferenceAdvance
+                == (2 * metrics.segmentAdvance) + metrics.colonAdvance
         )
 
         let availableWidth = 1_200.0
-        let fontSize = ClockTypography.fontSize(
+        let layout = ClockTypography.layout(
             availableWidth: availableWidth,
             metrics: metrics
         )
-        let scaledReferenceAdvance = metrics.referenceAdvance
-            * fontSize / metrics.referenceSize
 
-        #expect(abs(scaledReferenceAdvance - (0.9 * availableWidth)) < 0.000_001)
+        #expect(
+            abs(layout.mainRunWidth - (0.98 * availableWidth))
+                < 0.000_001
+        )
+        #expect(
+            abs(
+                layout.secondsFontSize
+                    - ((2.0 / 3.0) * layout.mainFontSize)
+            ) < 0.000_001
+        )
+        #expect(
+            abs(layout.lineGap - (0.1 * layout.mainFontSize))
+                < 0.000_001
+        )
+        #expect(
+            abs(
+                layout.blockHeight
+                    - (
+                        layout.mainLineHeight
+                            + layout.lineGap
+                            + layout.secondsLineHeight
+                    )
+            ) < 0.000_001
+        )
     }
 
     @Test("Metrics match independent CoreText line measurements")
@@ -123,7 +144,7 @@ struct ClockTypographyTests {
         #expect(resolvedName == BrandFont.postScriptName)
     }
 
-    @Test("Every two-character value uses the same fixed slot centers")
+    @Test("Every two-character value uses fixed two-line slot centers")
     func everyValueUsesFixedSlotCenters() throws {
         try BrandFont.register()
         let metrics = ClockTypography.metrics(
@@ -135,21 +156,30 @@ struct ClockTypographyTests {
             metrics: metrics
         )
         let expectedCenters = layout
-            .slots(for: ["00", "00", "00"])
+            .mainSlots(hours: "00", minutes: "00")
             .map(\.centerX)
+        let expectedSecondsCenter = layout.secondsSlot(seconds: "00").centerX
         let font = CTFontCreateWithName(
             BrandFont.postScriptName as CFString,
             metrics.referenceSize,
             nil
         )
+        let clockTime = ClockTime(
+            date: Date(timeIntervalSince1970: 0),
+            timeZone: TimeZone(secondsFromGMT: 0)!
+        )
 
         for value in 0...99 {
             let text = twoDigits(value)
-            let slots = layout.slots(for: [text, text, text])
+            let slots = layout.mainSlots(hours: text, minutes: text)
+            let canvasSize = CGSize(
+                width: 1_000,
+                height: layout.blockHeight + 200
+            )
             let path = ClockTypography.glyphPath(
-                segments: [text, text, text],
+                time: clockTime,
                 layout: layout,
-                canvasSize: CGSize(width: 1_000, height: 400),
+                canvasSize: canvasSize,
                 fontName: BrandFont.postScriptName
             )
             let pathBounds = path.boundingBoxOfPath
@@ -158,16 +188,26 @@ struct ClockTypographyTests {
                 measuredAdvance(of: text, in: font)
                     <= metrics.segmentAdvance
             )
-            #expect(slots.map(\.text) == [text, ":", text, ":", text])
+            #expect(slots.map(\.text) == [text, ":", text])
             #expect(slots.map(\.centerX) == expectedCenters)
+            #expect(
+                layout.secondsSlot(seconds: text).centerX
+                    == expectedSecondsCenter
+            )
             #expect(!path.isEmpty)
-            #expect(pathBounds.minX >= 50)
-            #expect(pathBounds.maxX <= 950)
+            #expect(pathBounds.minX >= 10)
+            #expect(pathBounds.maxX <= 990)
             #expect(pathBounds.minY >= 0)
-            #expect(pathBounds.maxY <= 400)
+            #expect(pathBounds.maxY <= canvasSize.height)
+            #expect(
+                abs(
+                    layout.blockOriginY(canvasHeight: canvasSize.height)
+                        - 100
+                ) < 0.000_001
+            )
         }
 
-        #expect(abs(layout.runWidth - 900) < 0.000_001)
+        #expect(abs(layout.mainRunWidth - 980) < 0.000_001)
     }
 
     private func twoDigits(_ value: Int) -> String {

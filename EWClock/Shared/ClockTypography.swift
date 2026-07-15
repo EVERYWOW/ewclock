@@ -7,9 +7,11 @@ enum ClockTypography {
         let widestSegment: String
         let segmentAdvance: CGFloat
         let colonAdvance: CGFloat
+        let ascent: CGFloat
+        let descent: CGFloat
 
-        var referenceAdvance: CGFloat {
-            (3 * segmentAdvance) + (2 * colonAdvance)
+        var mainReferenceAdvance: CGFloat {
+            (2 * segmentAdvance) + colonAdvance
         }
     }
 
@@ -19,30 +21,50 @@ enum ClockTypography {
             let centerX: CGFloat
         }
 
-        let fontSize: CGFloat
-        let segmentWidth: CGFloat
-        let colonWidth: CGFloat
+        let mainFontSize: CGFloat
+        let secondsFontSize: CGFloat
+        let mainSegmentWidth: CGFloat
+        let mainColonWidth: CGFloat
+        let secondsSegmentWidth: CGFloat
+        let mainAscent: CGFloat
+        let mainDescent: CGFloat
+        let secondsAscent: CGFloat
+        let secondsDescent: CGFloat
+        let lineGap: CGFloat
 
-        var runWidth: CGFloat {
-            (3 * segmentWidth) + (2 * colonWidth)
+        var mainRunWidth: CGFloat {
+            (2 * mainSegmentWidth) + mainColonWidth
         }
 
-        func slots(for segments: [String]) -> [Slot] {
-            precondition(segments.count == 3, "The clock requires three segments")
+        var mainLineHeight: CGFloat {
+            mainAscent + mainDescent
+        }
+
+        var secondsLineHeight: CGFloat {
+            secondsAscent + secondsDescent
+        }
+
+        var blockHeight: CGFloat {
+            mainLineHeight + lineGap + secondsLineHeight
+        }
+
+        func blockOriginY(canvasHeight: CGFloat) -> CGFloat {
+            (canvasHeight - blockHeight) / 2
+        }
+
+        func mainSlots(hours: String, minutes: String) -> [Slot] {
+            precondition(hours.count == 2, "Hours require two characters")
+            precondition(minutes.count == 2, "Minutes require two characters")
 
             let values = [
-                segments[0],
+                hours,
                 ":",
-                segments[1],
-                ":",
-                segments[2]
+                minutes
             ]
             let widths = [
-                segmentWidth,
-                colonWidth,
-                segmentWidth,
-                colonWidth,
-                segmentWidth
+                mainSegmentWidth,
+                mainColonWidth,
+                mainSegmentWidth
             ]
             var leadingEdge = CGFloat.zero
 
@@ -53,6 +75,15 @@ enum ClockTypography {
                     centerX: leadingEdge + (width / 2)
                 )
             }
+        }
+
+        func secondsSlot(seconds: String) -> Slot {
+            precondition(seconds.count == 2, "Seconds require two characters")
+
+            return Slot(
+                text: seconds,
+                centerX: secondsSegmentWidth / 2
+            )
         }
     }
 
@@ -77,57 +108,100 @@ enum ClockTypography {
             referenceSize: referenceSize,
             widestSegment: widestSegment.text,
             segmentAdvance: widestSegment.advance,
-            colonAdvance: advance(of: ":", in: font)
+            colonAdvance: advance(of: ":", in: font),
+            ascent: CTFontGetAscent(font),
+            descent: CTFontGetDescent(font)
         )
     }
 
-    static func fontSize(availableWidth: CGFloat, metrics: Metrics) -> CGFloat {
+    static func mainFontSize(
+        availableWidth: CGFloat,
+        metrics: Metrics
+    ) -> CGFloat {
         precondition(availableWidth >= 0, "Available width cannot be negative")
-        precondition(metrics.referenceAdvance > 0, "Reference advance must be positive")
+        precondition(
+            metrics.mainReferenceAdvance > 0,
+            "Reference advance must be positive"
+        )
 
         return metrics.referenceSize
-            * ((0.9 * availableWidth) / metrics.referenceAdvance)
+            * ((0.98 * availableWidth) / metrics.mainReferenceAdvance)
     }
 
     static func layout(availableWidth: CGFloat, metrics: Metrics) -> Layout {
-        let fontSize = fontSize(
+        let mainFontSize = mainFontSize(
             availableWidth: availableWidth,
             metrics: metrics
         )
-        let scale = fontSize / metrics.referenceSize
+        let secondsFontSize = mainFontSize * (2.0 / 3.0)
+        let mainScale = mainFontSize / metrics.referenceSize
+        let secondsScale = secondsFontSize / metrics.referenceSize
 
         return Layout(
-            fontSize: fontSize,
-            segmentWidth: metrics.segmentAdvance * scale,
-            colonWidth: metrics.colonAdvance * scale
+            mainFontSize: mainFontSize,
+            secondsFontSize: secondsFontSize,
+            mainSegmentWidth: metrics.segmentAdvance * mainScale,
+            mainColonWidth: metrics.colonAdvance * mainScale,
+            secondsSegmentWidth: metrics.segmentAdvance * secondsScale,
+            mainAscent: metrics.ascent * mainScale,
+            mainDescent: metrics.descent * mainScale,
+            secondsAscent: metrics.ascent * secondsScale,
+            secondsDescent: metrics.descent * secondsScale,
+            lineGap: mainFontSize * 0.1
         )
     }
 
     static func glyphPath(
-        segments: [String],
+        time: ClockTime,
         layout: Layout,
         canvasSize: CGSize,
         fontName: String
     ) -> CGPath {
-        let font = CTFontCreateWithName(
+        let mainFont = CTFontCreateWithName(
             fontName as CFString,
-            layout.fontSize,
+            layout.mainFontSize,
+            nil
+        )
+        let secondsFont = CTFontCreateWithName(
+            fontName as CFString,
+            layout.secondsFontSize,
             nil
         )
         let path = CGMutablePath()
-        let runOriginX = (canvasSize.width - layout.runWidth) / 2
-        let baselineY = (canvasSize.height / 2)
-            + ((CTFontGetAscent(font) - CTFontGetDescent(font)) / 2)
+        let mainOriginX = (canvasSize.width - layout.mainRunWidth) / 2
+        let secondsOriginX = (
+            canvasSize.width - layout.secondsSegmentWidth
+        ) / 2
+        let blockOriginY = layout.blockOriginY(
+            canvasHeight: canvasSize.height
+        )
+        let mainBaselineY = blockOriginY + layout.mainAscent
+        let secondsBaselineY = blockOriginY
+            + layout.mainLineHeight
+            + layout.lineGap
+            + layout.secondsAscent
 
-        for slot in layout.slots(for: segments) {
+        for slot in layout.mainSlots(
+            hours: time.hours,
+            minutes: time.minutes
+        ) {
             append(
                 slot.text,
-                centeredAt: runOriginX + slot.centerX,
-                baselineY: baselineY,
-                font: font,
+                centeredAt: mainOriginX + slot.centerX,
+                baselineY: mainBaselineY,
+                font: mainFont,
                 to: path
             )
         }
+
+        let secondsSlot = layout.secondsSlot(seconds: time.seconds)
+        append(
+            secondsSlot.text,
+            centeredAt: secondsOriginX + secondsSlot.centerX,
+            baselineY: secondsBaselineY,
+            font: secondsFont,
+            to: path
+        )
 
         return path
     }

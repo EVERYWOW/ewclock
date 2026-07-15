@@ -48,7 +48,7 @@ struct ClockView: View {
 
         return Canvas { context, size in
             let glyphPath = ClockTypography.glyphPath(
-                segments: time.segments,
+                time: time,
                 layout: layout,
                 canvasSize: size,
                 fontName: BrandFont.postScriptName
