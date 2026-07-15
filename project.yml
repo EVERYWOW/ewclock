@@ -33,6 +33,7 @@ targets:
       path: build/generated/EWClock-iOS-Info.plist
       properties:
         CFBundleDisplayName: EW Clock
+        ITSAppUsesNonExemptEncryption: false
         UIStatusBarHidden: true
         UIViewControllerBasedStatusBarAppearance: false
         UILaunchScreen:
@@ -71,6 +72,8 @@ targets:
       path: build/generated/EWClock-macOS-Info.plist
       properties:
         CFBundleDisplayName: EW Clock
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.utilities
 
   EWClockTests:
     type: bundle.unit-test

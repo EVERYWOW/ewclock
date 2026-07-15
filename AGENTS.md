@@ -23,11 +23,14 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - App name: `EW Clock`
 - Bundle identifier: `ch.everywow.clock`
 - App Store Connect SKU: `everywow-clock`
+- App Store Connect Apple ID: `6791122125`
 - Apple team: EVERYWOW AG (`L69664DD39`)
 - Initial release: version `1.0`
 - Initial build number: `1`
 - Internal TestFlight group: `EVERYWOW Internal`
-- Intended testers: `stefanie@hetjens.com`, `production@everywow.ch`
+- External TestFlight group: `EVERYWOW Public Beta`
+- Public TestFlight link: `https://testflight.apple.com/join/PGJ161tP`
+- TestFlight feedback and beta-review email: `apps@everywow.ch`
 
 Never commit Apple credentials, App Store Connect keys, provisioning profiles, or signing private keys.
 
@@ -39,7 +42,7 @@ Never commit Apple credentials, App Store Connect keys, provisioning profiles, o
 - `./script/build_and_run.sh` builds and opens the Mac app.
 - `./script/test.sh` runs unit tests and platform build checks.
 - `./script/archive.sh` creates signed iOS and Mac archives for distribution.
-- `./script/upload_testflight.sh` validates and uploads archives only when explicitly performing a release.
+- `./script/upload_testflight.sh [all|ios|macos]` validates and uploads archives only when explicitly performing a release. The optional platform argument supports retrying one platform without duplicating an accepted upload.
 - Keep shared app code under `EWClock/Shared`, platform adapters under `EWClock/iOS` and `EWClock/macOS`, resources under `EWClock/Resources`, and tests under `EWClockTests`.
 
 ## Git Workflow
@@ -58,6 +61,18 @@ Stefanie works across computers. Keep `main` synchronized and preserve unrelated
 - Use one App Store Connect app record with separate iPhone/iPad and Mac builds.
 - Increase `CURRENT_PROJECT_VERSION` for every uploaded build.
 - Verify both uploaded builds finish processing before adding them to `EVERYWOW Internal`.
-- Internal testers must already be App Store Connect users. Ask before granting a new App Store Connect role if either intended tester is missing.
+- Internal testers must already be App Store Connect users. Ask before granting any new App Store Connect role solely to make someone eligible for internal testing.
+- External testers use `EVERYWOW Public Beta` and its public link. External builds require TestFlight Beta App Review, but must never be submitted for App Store review unless Stefanie explicitly changes the distribution scope.
+
+## Current TestFlight State
+
+As of 15 July 2026:
+
+- App Store Connect record `EW Clock` exists with Apple ID `6791122125` for iOS/iPadOS and macOS.
+- Version `1.0`, build `1` uploaded successfully for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`.
+- The internal group `EVERYWOW Internal` has automatic distribution enabled and contains both builds, but has no testers. The requested addresses were not eligible internal users, and no App Store Connect roles were granted.
+- The external group `EVERYWOW Public Beta` contains both builds. Both builds are `Waiting for Review` in TestFlight Beta App Review.
+- The public link is enabled and open to anyone without a tester limit: `https://testflight.apple.com/join/PGJ161tP`. Testers cannot join until Apple approves at least one build.
+- Nothing has been submitted to App Store review or configured for App Store release.
 
 The approved design is in `docs/superpowers/specs/2026-07-15-ew-clock-design.md`.
