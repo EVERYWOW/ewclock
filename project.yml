@@ -1,0 +1,99 @@
+name: EWClock
+
+options:
+  createIntermediateGroups: true
+
+settings:
+  base:
+    CURRENT_PROJECT_VERSION: 1
+    DEVELOPMENT_TEAM: L69664DD39
+    MARKETING_VERSION: 1.0
+    SWIFT_VERSION: 6.0
+
+targets:
+  EWClock-iOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: EWClock/Shared
+      - path: EWClock/iOS
+      - path: EWClock/Resources
+        buildPhase: resources
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+        PRODUCT_BUNDLE_IDENTIFIER: ch.everywow.clock
+        PRODUCT_NAME: EW Clock
+        TARGETED_DEVICE_FAMILY: "1,2"
+    info:
+      path: build/generated/EWClock-iOS-Info.plist
+      properties:
+        CFBundleDisplayName: EW Clock
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UIRequiresFullScreen: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+
+  EWClock-macOS:
+    type: application
+    platform: macOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: EWClock/Shared
+      - path: EWClock/macOS
+      - path: EWClock/Resources
+        buildPhase: resources
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_STYLE: Automatic
+        PRODUCT_BUNDLE_IDENTIFIER: ch.everywow.clock
+        PRODUCT_NAME: EW Clock
+    info:
+      path: build/generated/EWClock-macOS-Info.plist
+      properties:
+        CFBundleDisplayName: EW Clock
+
+  EWClockTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: EWClockTests
+      - path: EWClock/Shared
+      - path: EWClock/Resources/EVERYWOWDisplayVF.ttf
+        buildPhase: resources
+    settings:
+      base:
+        CODE_SIGNING_ALLOWED: NO
+        PRODUCT_BUNDLE_IDENTIFIER: ch.everywow.clock.tests
+        PRODUCT_NAME: EWClockTests
+    info:
+      path: build/generated/EWClockTests-Info.plist
+
+schemes:
+  EWClock-iOS:
+    build:
+      targets:
+        EWClock-iOS: all
+  EWClock-macOS:
+    build:
+      targets:
+        EWClock-macOS: all
+  EWClockTests:
+    build:
+      targets:
+        EWClockTests: test
+    test:
+      targets:
+        - EWClockTests
