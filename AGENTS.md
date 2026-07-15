@@ -27,8 +27,9 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Apple team: EVERYWOW AG (`L69664DD39`)
 - Initial release: version `1.0`
 - Initial build number: `1`
+- Current internal TestFlight release: version `1.0`, build `2`
 - Internal TestFlight group: `EVERYWOW Internal`
-- Internal TestFlight tester: `apps@everywow.ch`
+- Internal TestFlight testers: `apps@everywow.ch`, `production@everywow.ch`
 - TestFlight feedback and beta-review email: `apps@everywow.ch`
 
 Never commit Apple credentials, App Store Connect keys, provisioning profiles, or signing private keys.
@@ -38,6 +39,7 @@ Never commit Apple credentials, App Store Connect keys, provisioning profiles, o
 ## Project and Commands
 
 - `project.yml` is the source of truth. Generate the Xcode project with `xcodegen generate` and do not hand-edit the generated project.
+- Keep `CFBundleVersion` and `CFBundleShortVersionString` in both generated Info.plists bound to `$(CURRENT_PROJECT_VERSION)` and `$(MARKETING_VERSION)`. XcodeGen otherwise writes stale literal versions when only the build setting changes.
 - `./script/build_and_run.sh` builds and opens the Mac app.
 - `./script/test.sh` runs unit tests and platform build checks.
 - `./script/archive.sh` creates signed iOS and Mac archives for distribution.
@@ -68,8 +70,9 @@ Stefanie works across computers. Keep `main` synchronized and preserve unrelated
 As of 15 July 2026:
 
 - App Store Connect record `EW Clock` exists with Apple ID `6791122125` for iOS/iPadOS and macOS.
-- Version `1.0`, build `1` uploaded successfully for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`.
-- The internal group `EVERYWOW Internal` has automatic distribution enabled, contains both builds, and has `apps@everywow.ch` as its internal tester.
+- Version `1.0`, builds `1` and `2` uploaded successfully for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`.
+- Build `2` is the current two-line release: `HH:MM` uses 98% width and `SS` is centered underneath at two-thirds size.
+- The internal group `EVERYWOW Internal` has automatic distribution enabled, contains builds `1` and `2` for both platforms, and has `apps@everywow.ch` and `production@everywow.ch` as internal testers. Both build `2` entries show `Testing`.
 - The former external group `EVERYWOW Public Beta` was removed, its public link was disabled, and both platform builds were withdrawn from TestFlight Beta App Review. Their external status is `Ready to Submit`, while they remain immediately available to the internal group.
 - Nothing has been submitted to App Store review or configured for App Store release.
 
