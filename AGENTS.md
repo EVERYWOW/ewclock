@@ -4,11 +4,11 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 
 ## Product Rules
 
-- Show only the current local time in 24-hour `hh:mm:ss` format.
+- Show only the current local time in 24-hour format, with `HH:MM` on the first line and `SS` on the second line.
 - Keep the background pure black and the time pure white.
-- Keep the time centered and horizontal in every orientation.
-- Size the complete time to 90% of the current screen or window width.
-- Render hours, minutes, and seconds in fixed two-character slots sized for the widest measured ASCII value from `00` through `99`, with fixed colon slots, so digit changes do not move the layout.
+- Keep the complete two-line time block centered in every orientation.
+- Size the `HH:MM` line to 98% of the current screen or window width. Render `SS` at two-thirds of the first line's font size and center it beneath the first line.
+- Render hours, minutes, and seconds in fixed two-character slots sized for the widest measured ASCII value from `00` through `99`, with a fixed colon slot between hours and minutes, so digit changes do not move the layout.
 - Use `EWClock/Resources/EVERYWOWDisplayVF.ttf` at variable weight 900. Its runtime PostScript instance is `EVERYWOWDisplay-Black`. EVERYWOW AG has authorized this font only for EVERYWOW’s app.
 - Keep the display awake while the clock is active. Restore normal idle behavior when the iPhone or iPad scene becomes inactive, and end the Mac assertion when the app terminates.
 - Support portrait and landscape on iPhone and iPad. Set `UIRequiresFullScreen = true`, apply `.persistentSystemOverlays(.hidden)`, and accept iPadOS 26 windowed mode.
@@ -16,7 +16,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Open a normal resizable Mac window. Do not enter macOS full screen automatically.
 - Add no controls, settings, gestures, networking, analytics, persistence, or unrelated features.
 - Store the company-logo icon at `EWClock/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png`. It was copied from `/Users/steffi/dev/ewtools/scripts/assets/everywow-favicon.png`; the repository copy is the source of truth.
-- Calculate width as three maximum measured `00` through `99` advances plus two colon advances, with zero implicit stack spacing or horizontal padding, scaled to `0.9 × available width`.
+- Calculate the first-line width as two maximum measured `00` through `99` advances plus one colon advance, with zero implicit horizontal padding, scaled to `0.98 × available width`. Use two-thirds of that font size for the centered seconds line.
 
 ## Identifiers
 

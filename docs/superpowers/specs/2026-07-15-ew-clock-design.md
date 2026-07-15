@@ -2,7 +2,7 @@
 
 ## Purpose
 
-EW Clock is a set clock for iPhone, iPad, and Mac. It shows the current local time in 24-hour `hh:mm:ss` format and keeps the display awake. The app has no settings, buttons, gestures, network access, data collection, or persistence.
+EW Clock is a set clock for iPhone, iPad, and Mac. It shows the current local time in 24-hour format with `HH:MM` above `SS` and keeps the display awake. The app has no settings, buttons, gestures, network access, data collection, or persistence.
 
 ## Platforms and Distribution
 
@@ -30,11 +30,11 @@ The project has no third-party runtime dependencies. The EVERYWOW Display font i
 
 The whole scene or content window is pure black. The time is pure white and centered horizontally and vertically.
 
-The time always stays horizontal. Its complete typographic advance width is 90% of the current screen or window width in portrait, landscape, full-screen, and windowed presentations. Resizing or rotating recalculates the font size immediately.
+The clock is a two-line block with `HH:MM` on the first line and `SS` on the second. The first line's complete typographic advance width is 98% of the current screen or window width in portrait, landscape, full-screen, and windowed presentations. The seconds use two-thirds of the first line's font size and are centered beneath it. The combined two-line block is centered horizontally and vertically. Resizing or rotating recalculates both sizes immediately.
 
 The display uses EVERYWOW Display at variable weight 900, which the font identifies as Black. The bundled source is `EVERYWOWDisplayVF.ttf` from the EVERYWOW website. EVERYWOW AG has authorized its use for this app.
 
-Hours, minutes, and seconds are three separate two-character segments. Each segment reserves the maximum advance measured across every ASCII value from `00` through `99` and centers its current value within that width. In the approved font, `00`, `04`, `40`, and `44` share the maximum advance. Two fixed colon slots separate the segments. The reference run is exactly three maximum segment advances plus two measured colon advances, with zero implicit stack spacing or horizontal padding. The font size scales this complete run to `0.9 × available width`. This keeps the layout fixed as the digits change.
+Hours, minutes, and seconds are separate two-character segments. Each segment reserves the maximum advance measured across every ASCII value from `00` through `99` and centers its current value within that width. In the approved font, `00`, `04`, `40`, and `44` share the maximum advance. One fixed colon slot separates hours and minutes. The first-line reference run is exactly two maximum segment advances plus one measured colon advance, with zero implicit horizontal padding. The main font size scales this run to `0.98 × available width`. Seconds use a second fixed segment slot at two-thirds of the main font size. CoreText ascent and descent metrics define each line box. A gap equal to `0.1 ×` the main font size separates the line boxes, and their combined height is centered vertically. This keeps every glyph position stable as the digits change.
 
 ## Timekeeping
 
@@ -58,9 +58,9 @@ The app icon copies `/Users/steffi/dev/ewtools/scripts/assets/everywow-favicon.p
 
 ## Verification
 
-Automated tests cover midnight, noon, single-digit padding, time-zone conversion, segment parsing, and the 90% typography calculation. Build checks cover iOS Simulator, a generic signed iOS archive, macOS, and a signed Mac archive.
+Automated tests cover midnight, noon, single-digit padding, time-zone conversion, segment parsing, the 98% first-line calculation, the two-thirds seconds scale, stable slot centers, and centered two-line geometry. Build checks cover iOS Simulator, a generic signed iOS archive, macOS, and a signed Mac archive.
 
-Visual checks use available iPhone and iPad simulators plus the local Mac app. They confirm the black background, white font, centering, fixed segment positions, both mobile orientations, Mac resizing, and 90% width behavior. A release check confirms the embedded font, icon, bundle identifiers, versions, signing team, and absence of network or privacy-sensitive capabilities.
+Visual checks use available iPhone and iPad simulators plus the local Mac app. They confirm the black background, white font, two-line centering, fixed segment positions, both mobile orientations, Mac resizing, 98% first-line width, and the two-thirds seconds scale. A release check confirms the embedded font, icon, bundle identifiers, versions, signing team, and absence of network or privacy-sensitive capabilities.
 
 ## Repository Memory
 
