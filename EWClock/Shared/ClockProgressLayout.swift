@@ -1,7 +1,7 @@
 import CoreGraphics
 
 struct ClockProgressLayout: Equatable, Sendable {
-    static let thicknessFraction: CGFloat = 0.0025
+    static let thicknessFraction: CGFloat = 0.005
 
     let thickness: CGFloat
     let topFrame: CGRect

@@ -62,18 +62,18 @@ struct ClockProgressLayoutTests {
             minuteFraction: 1
         )
 
-        #expect(layout.thickness == 2.5)
+        #expect(layout.thickness == 5)
         #expect(
             layout.topFrame
-                == CGRect(x: 0, y: 0, width: 500, height: 2.5)
+                == CGRect(x: 0, y: 0, width: 500, height: 5)
         )
         #expect(
             layout.bottomFrame
                 == CGRect(
                     x: 0,
-                    y: 397.5,
+                    y: 395,
                     width: 1_000,
-                    height: 2.5
+                    height: 5
                 )
         )
     }

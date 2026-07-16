@@ -8,7 +8,7 @@ EW Clock adds two thin white progress bars to show movement within the current h
 
 Each bar starts at the left edge and grows smoothly towards the right edge. The elapsed portion is pure white. The remaining portion is the existing pure-black background, with no separate track.
 
-Each bar’s requested height is exactly `0.0025 × available width`. Available width and height are the full `GeometryReader` dimensions after `.ignoresSafeArea()` has expanded the clock to its outer content bounds. The top bar sits flush with the top edge, and the bottom bar sits flush with the bottom edge. Both bars span unsafe regions and adapt immediately to every iPhone and iPad orientation and every Mac or iPad window size. If a degenerate window is shorter than the requested bar height, the rendered height clamps to the available height.
+Each bar’s requested height is exactly `0.005 × available width`. Available width and height are the full `GeometryReader` dimensions after `.ignoresSafeArea()` has expanded the clock to its outer content bounds. The top bar sits flush with the top edge, and the bottom bar sits flush with the bottom edge. Both bars span unsafe regions and adapt immediately to every iPhone and iPad orientation and every Mac or iPad window size. If a degenerate window is shorter than the requested bar height, the rendered height clamps to the available height.
 
 The bars are decorative, use `.allowsHitTesting(false)`, and are hidden from accessibility. They remain visible when the EVERYWOW logo is present. The bars render in front of the clock, and the logo renders in front of the bars. Dismissing the logo does not affect either bar.
 
@@ -30,7 +30,7 @@ The clock text keeps its existing second-aligned update schedule. A separate `Ti
 
 ## Structure
 
-A shared time-progress value calculates the two progress fractions from a date and calendar. A shared layout value calculates the rectangle geometry. The rendered thickness is the smaller of `0.0025 × availableWidth` and `availableHeight`. Each elapsed rectangle has the width `availableWidth × progress`. The top rectangle starts at `(0, 0)`, and the bottom rectangle starts at `(0, availableHeight − thickness)`. A SwiftUI view uses those values to draw the white rectangles.
+A shared time-progress value calculates the two progress fractions from a date and calendar. A shared layout value calculates the rectangle geometry. The rendered thickness is the smaller of `0.005 × availableWidth` and `availableHeight`. Each elapsed rectangle has the width `availableWidth × progress`. The top rectangle starts at `(0, 0)`, and the bottom rectangle starts at `(0, availableHeight − thickness)`. A SwiftUI view uses those values to draw the white rectangles.
 
 The progress calculations and layout geometry stay independent of SwiftUI so automated tests can verify them directly.
 

@@ -12,7 +12,7 @@
 
 - Support iOS, iPadOS, and macOS 26.0 or later with no third-party runtime dependencies.
 - Keep the background pure black and the bars pure white.
-- Base each bar’s height on `0.0025 × available width` and cover safe-area regions.
+- Base each bar’s height on `0.005 × available width` and cover safe-area regions.
 - Keep the bars noninteractive and hidden from accessibility.
 - Preserve the existing clock typography, logo display and dismissal, idle-timer behavior, and window behavior.
 - Use `project.yml` as the Xcode project source of truth and do not hand-edit the generated project.
@@ -150,9 +150,9 @@ struct ClockProgressLayoutTests {
             minuteFraction: 1
         )
 
-        #expect(layout.thickness == 2.5)
-        #expect(layout.topFrame == CGRect(x: 0, y: 0, width: 500, height: 2.5))
-        #expect(layout.bottomFrame == CGRect(x: 0, y: 397.5, width: 1_000, height: 2.5))
+        #expect(layout.thickness == 5)
+        #expect(layout.topFrame == CGRect(x: 0, y: 0, width: 500, height: 5))
+        #expect(layout.bottomFrame == CGRect(x: 0, y: 395, width: 1_000, height: 5))
     }
 
     @Test("Elapsed widths clamp from zero through full width")
@@ -194,7 +194,7 @@ Expected: FAIL because `ClockProgressLayout` is not defined.
 import CoreGraphics
 
 struct ClockProgressLayout: Equatable, Sendable {
-    static let thicknessFraction: CGFloat = 0.0025
+    static let thicknessFraction: CGFloat = 0.005
 
     let thickness: CGFloat
     let topFrame: CGRect

@@ -7,7 +7,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Show the current local time in 24-hour format, with `HH:MM` on the first line and `SS` on the second line, plus the approved EVERYWOW logo in the bottom-left corner.
 - Keep the background pure black and the time pure white.
 - Draw a pure-white progress bar flush with the top edge for elapsed time in the current hour and another flush with the bottom edge for elapsed time in the current minute. Animate both smoothly from left to right, keep the remaining area black, and render them across safe-area regions.
-- Size each progress bar to 0.25% of the available width in height. Keep the bars visible when the EVERYWOW logo is shown, and let logo dismissal affect only the logo.
+- Size each progress bar to 0.5% of the available width in height. Keep the bars visible when the EVERYWOW logo is shown, and let logo dismissal affect only the logo.
 - Keep the complete two-line time block centered in every orientation.
 - Size the `HH:MM` line to 98% of the current screen or window width. Render `SS` at two-thirds of the first line's font size and center it beneath the first line.
 - Render hours, minutes, and seconds in fixed two-character slots sized for the widest measured ASCII value from `00` through `99`, with a fixed colon slot between hours and minutes, so digit changes do not move the layout.
