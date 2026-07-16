@@ -57,6 +57,11 @@ struct ClockView: View {
         }
         .background(Color.black)
         .ignoresSafeArea()
+        .contentShape(Rectangle())
+#if os(macOS)
+        .simultaneousGesture(WindowDragGesture())
+        .allowsWindowActivationEvents(true)
+#endif
     }
 
     private func clockRun(
