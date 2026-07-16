@@ -39,6 +39,8 @@ struct ClockView: View {
                         alignment: .center
                     )
 
+                    ClockProgressBarsView()
+
                     if isLogoVisible {
                         EverywowLogoView(
                             edgeInset: ClockTypography.mainInkLeadingInset(
