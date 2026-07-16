@@ -8,7 +8,7 @@ This approved feature replaces the earlier restrictions that allowed only the cu
 
 ## Layout
 
-The logo uses the supplied `everywow-logo-white.svg` artwork and keeps its original aspect ratio. Its width is `0.08 ×` the current screen or window width. The initial 6% implementation was increased after visual review because the wide, shallow wordmark looked too small.
+The logo uses the supplied `everywow-logo-white.svg` artwork and keeps its original aspect ratio. Its width is `0.16 ×` the current screen or window width. The 8% implementation was doubled after visual review, without changing the existing edge-inset calculation.
 
 The clock's 98% typographic advance includes the font's side bearings, so its visible white glyphs begin farther from the edge than 1% of the width. The logo uses the current `HH` glyphs' visible leading inset for both its left and bottom insets. This value scales with the window and updates when the hour changes, keeping both logo edge distances equal in points and aligned with the clock the user sees.
 
