@@ -251,14 +251,14 @@ struct ClockTypographyTests {
 
 @Suite("EVERYWOW logo layout")
 struct EverywowLogoLayoutTests {
-    @Test("Artwork uses eight percent width and equal clock edge insets")
+    @Test("Artwork uses sixteen percent width and equal clock edge insets")
     func artworkGeometry() {
         let layout = EverywowLogoLayout(
             availableSize: CGSize(width: 1_000, height: 400),
             edgeInset: 30
         )
 
-        #expect(abs(layout.artworkFrame.width - 80) < 0.000_001)
+        #expect(abs(layout.artworkFrame.width - 160) < 0.000_001)
         #expect(abs(layout.artworkFrame.minX - 30) < 0.000_001)
         #expect(abs(layout.artworkFrame.maxY - 370) < 0.000_001)
         #expect(

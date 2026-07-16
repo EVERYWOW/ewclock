@@ -13,7 +13,7 @@
 - Target iOS, iPadOS, and macOS 26.0 or later.
 - Keep the background pure black and the time and logo pure white.
 - Keep the complete two-line time block centered and preserve its existing 98% width calculation.
-- Size the logo to 8% of the available width and inset it from the left and bottom by the current `HH` glyphs' visible leading inset.
+- Size the logo to 16% of the available width and inset it from the left and bottom by the current `HH` glyphs' visible leading inset.
 - Hide the logo immediately after activation and restore it only after the app process closes and reopens.
 - Add no persistence, networking, analytics, settings, or unrelated features.
 - Use `project.yml` as the Xcode project source of truth and generate the project with `xcodegen generate`.
@@ -38,19 +38,19 @@
 
 - [ ] **Step 1: Write failing geometry tests**
 
-Add typography assertions that a segment's visible inset is greater than the 1% advance inset and that `08` sits farther inward than `00`. Add logo tests that use a 1,000 × 400-point canvas and assert an artwork width of 80 points, equal 30-point left and bottom insets, the SVG aspect ratio `239.4587 / 51.3128`, and a hit target of at least 44 × 44 points contained by the canvas. Add a narrow-canvas test that confirms the hit target is clamped inside the available bounds without changing `artworkFrame`.
+Add typography assertions that a segment's visible inset is greater than the 1% advance inset and that `08` sits farther inward than `00`. Add logo tests that use a 1,000 × 400-point canvas and assert an artwork width of 160 points, equal 30-point left and bottom insets, the SVG aspect ratio `239.4587 / 51.3128`, and a hit target of at least 44 × 44 points contained by the canvas. Add a narrow-canvas test that confirms the hit target is clamped inside the available bounds without changing `artworkFrame`.
 
 ```swift
 @Suite("EVERYWOW logo layout")
 struct EverywowLogoLayoutTests {
-    @Test("Artwork uses eight percent width and equal clock edge insets")
+    @Test("Artwork uses sixteen percent width and equal clock edge insets")
     func artworkGeometry() {
         let layout = EverywowLogoLayout(
             availableSize: CGSize(width: 1_000, height: 400),
             edgeInset: 30
         )
 
-        #expect(abs(layout.artworkFrame.width - 80) < 0.000_001)
+        #expect(abs(layout.artworkFrame.width - 160) < 0.000_001)
         #expect(abs(layout.artworkFrame.minX - 30) < 0.000_001)
         #expect(abs(layout.artworkFrame.maxY - 370) < 0.000_001)
         #expect(
@@ -99,7 +99,7 @@ import CoreGraphics
 
 struct EverywowLogoLayout: Equatable, Sendable {
     static let artworkAspectRatio: CGFloat = 239.4587 / 51.3128
-    static let artworkWidthFraction: CGFloat = 0.08
+    static let artworkWidthFraction: CGFloat = 0.16
     static let minimumHitTargetSize: CGFloat = 44
 
     let availableSize: CGSize

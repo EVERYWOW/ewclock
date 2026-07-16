@@ -2,7 +2,7 @@ import CoreGraphics
 
 struct EverywowLogoLayout: Equatable, Sendable {
     static let artworkAspectRatio: CGFloat = 239.4587 / 51.3128
-    static let artworkWidthFraction: CGFloat = 0.08
+    static let artworkWidthFraction: CGFloat = 0.16
     static let minimumHitTargetSize: CGFloat = 44
 
     let availableSize: CGSize
