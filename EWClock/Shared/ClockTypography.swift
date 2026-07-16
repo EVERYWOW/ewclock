@@ -7,6 +7,7 @@ enum ClockTypography {
         let widestSegment: String
         let segmentAdvance: CGFloat
         let colonAdvance: CGFloat
+        let segmentLeadingInkInsets: [String: CGFloat]
         let ascent: CGFloat
         let descent: CGFloat
 
@@ -103,12 +104,26 @@ enum ClockTypography {
         let widestSegment = segmentMeasurements.first {
             $0.advance == maximumAdvance
         }!
+        let segmentLeadingInkInsets = Dictionary(
+            uniqueKeysWithValues: segmentMeasurements.map { measurement in
+                let path = CGMutablePath()
+                append(
+                    measurement.text,
+                    centeredAt: maximumAdvance / 2,
+                    baselineY: 0,
+                    font: font,
+                    to: path
+                )
+                return (measurement.text, path.boundingBoxOfPath.minX)
+            }
+        )
 
         return Metrics(
             referenceSize: referenceSize,
             widestSegment: widestSegment.text,
             segmentAdvance: widestSegment.advance,
             colonAdvance: advance(of: ":", in: font),
+            segmentLeadingInkInsets: segmentLeadingInkInsets,
             ascent: CTFontGetAscent(font),
             descent: CTFontGetDescent(font)
         )
@@ -126,6 +141,29 @@ enum ClockTypography {
 
         return metrics.referenceSize
             * ((0.98 * availableWidth) / metrics.mainReferenceAdvance)
+    }
+
+    static func mainInkLeadingInset(
+        availableWidth: CGFloat,
+        metrics: Metrics,
+        leadingSegment: String
+    ) -> CGFloat {
+        precondition(
+            leadingSegment.count == 2,
+            "The leading segment requires two characters"
+        )
+        guard let referenceInkInset = metrics
+            .segmentLeadingInkInsets[leadingSegment] else {
+            preconditionFailure("The leading segment must contain ASCII digits")
+        }
+        let layout = layout(
+            availableWidth: availableWidth,
+            metrics: metrics
+        )
+        let advanceInset = (availableWidth - layout.mainRunWidth) / 2
+        let scale = layout.mainFontSize / metrics.referenceSize
+
+        return advanceInset + (referenceInkInset * scale)
     }
 
     static func layout(availableWidth: CGFloat, metrics: Metrics) -> Layout {

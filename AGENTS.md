@@ -4,7 +4,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 
 ## Product Rules
 
-- Show only the current local time in 24-hour format, with `HH:MM` on the first line and `SS` on the second line.
+- Show the current local time in 24-hour format, with `HH:MM` on the first line and `SS` on the second line, plus the approved EVERYWOW logo in the bottom-left corner.
 - Keep the background pure black and the time pure white.
 - Keep the complete two-line time block centered in every orientation.
 - Size the `HH:MM` line to 98% of the current screen or window width. Render `SS` at two-thirds of the first line's font size and center it beneath the first line.
@@ -14,7 +14,9 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Support portrait and landscape on iPhone and iPad. Set `UIRequiresFullScreen = true`, apply `.persistentSystemOverlays(.hidden)`, and accept iPadOS 26 windowed mode.
 - Keep the iPhone and iPad launch screen pure black with `UILaunchScreen.UIColorName = LaunchBackground` and a black `LaunchBackground.colorset`.
 - Open a normal resizable Mac window. Do not enter macOS full screen automatically.
-- Add no controls, settings, gestures, networking, analytics, persistence, or unrelated features.
+- Let the user tap or click only the EVERYWOW logo to hide it immediately for the rest of the current app session. Restore it when the app process closes and reopens. Add no other controls, settings, gestures, networking, analytics, persistence, or unrelated features.
+- Store the in-app logo at `EWClock/Resources/Assets.xcassets/EverywowLogo.imageset/everywow-logo-white.svg`. It was copied from `/Users/steffi/Library/CloudStorage/GoogleDrive-steffi@everywow.ch/Shared drives/EW Brand Materials/01 Logo/Logo/everywow-logo-white.svg`; the repository copy is the source of truth.
+- Size the logo to 8% of the available width. Inset it from the left and bottom by the current `HH` glyphs' visible leading inset, so both edge distances match the visible clock margin and are equal in points. Recalculate that inset when the hour changes. Keep a clamped hit target of at least 44 × 44 points without moving or resizing the artwork, and do not show a keyboard focus border.
 - Store the company-logo icon at `EWClock/Resources/Assets.xcassets/AppIcon.appiconset/icon-1024.png`. It was copied from `/Users/steffi/dev/ewtools/scripts/assets/everywow-favicon.png`; the repository copy is the source of truth.
 - Calculate the first-line width as two maximum measured `00` through `99` advances plus one colon advance, with zero implicit horizontal padding, scaled to `0.98 × available width`. Use two-thirds of that font size for the centered seconds line.
 

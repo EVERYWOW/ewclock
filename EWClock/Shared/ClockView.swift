@@ -1,16 +1,20 @@
 import SwiftUI
 
 struct ClockView: View {
+    @Binding private var isLogoVisible: Bool
+
     private let metrics: ClockTypography.Metrics
     private let timelineStart: Date
 
     init(
+        isLogoVisible: Binding<Bool>,
         metrics: ClockTypography.Metrics = ClockTypography.metrics(
             fontName: BrandFont.postScriptName,
             referenceSize: 100
         ),
         now: Date = Date()
     ) {
+        _isLogoVisible = isLogoVisible
         self.metrics = metrics
         timelineStart = Date(
             timeIntervalSinceReferenceDate: floor(
@@ -22,15 +26,31 @@ struct ClockView: View {
     var body: some View {
         GeometryReader { geometry in
             TimelineView(.periodic(from: timelineStart, by: 1)) { context in
-                clockRun(
-                    time: ClockTime(date: context.date),
-                    availableWidth: geometry.size.width
-                )
-                .frame(
-                    width: geometry.size.width,
-                    height: geometry.size.height,
-                    alignment: .center
-                )
+                let time = ClockTime(date: context.date)
+
+                ZStack {
+                    clockRun(
+                        time: time,
+                        availableWidth: geometry.size.width
+                    )
+                    .frame(
+                        width: geometry.size.width,
+                        height: geometry.size.height,
+                        alignment: .center
+                    )
+
+                    if isLogoVisible {
+                        EverywowLogoView(
+                            edgeInset: ClockTypography.mainInkLeadingInset(
+                                availableWidth: geometry.size.width,
+                                metrics: metrics,
+                                leadingSegment: time.hours
+                            )
+                        ) {
+                            isLogoVisible = false
+                        }
+                    }
+                }
             }
         }
         .background(Color.black)

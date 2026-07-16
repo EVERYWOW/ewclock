@@ -4,7 +4,7 @@
 
 **Goal:** Add the supplied white EVERYWOW logo to the bottom-left corner and let the user hide it until the app process ends.
 
-**Architecture:** A pure layout type calculates the artwork and hit-target frames from the available size, which keeps the geometry testable without rendering SwiftUI. `ClockView` receives app-owned visibility as a binding and overlays a focused `EverywowLogoView` without changing the centered clock canvas.
+**Architecture:** A pure layout type calculates the artwork and hit-target frames from the available size, which keeps the geometry testable without rendering SwiftUI. `ClockTypography` measures the visible leading edge of every two-digit segment, and `ClockView` selects the current `HH` value. `ClockView` receives app-owned visibility as a binding and overlays a dedicated `EverywowLogoView` without changing the centered clock canvas.
 
 **Tech Stack:** Swift 6, SwiftUI, Swift Testing, Xcode asset catalogs, and XcodeGen
 
@@ -13,7 +13,7 @@
 - Target iOS, iPadOS, and macOS 26.0 or later.
 - Keep the background pure black and the time and logo pure white.
 - Keep the complete two-line time block centered and preserve its existing 98% width calculation.
-- Size the logo to 6% of the available width and inset it from the left and bottom by 1% of the available width.
+- Size the logo to 8% of the available width and inset it from the left and bottom by the current `HH` glyphs' visible leading inset.
 - Hide the logo immediately after activation and restore it only after the app process closes and reopens.
 - Add no persistence, networking, analytics, settings, or unrelated features.
 - Use `project.yml` as the Xcode project source of truth and generate the project with `xcodegen generate`.
@@ -29,28 +29,30 @@
 
 **Files:**
 - Create: `EWClock/Shared/EverywowLogoLayout.swift`
+- Modify: `EWClock/Shared/ClockTypography.swift`
 - Modify: `EWClockTests/ClockTests.swift`
 
 **Interfaces:**
 - Consumes: `CGSize`, `CGRect`, and `CGFloat` from CoreGraphics.
-- Produces: `EverywowLogoLayout.init(availableSize: CGSize)`, `artworkFrame: CGRect`, and `hitTargetFrame: CGRect`.
+- Produces: `ClockTypography.mainInkLeadingInset(availableWidth:metrics:leadingSegment:)`, `EverywowLogoLayout.init(availableSize:edgeInset:)`, `artworkFrame: CGRect`, and `hitTargetFrame: CGRect`.
 
 - [ ] **Step 1: Write failing geometry tests**
 
-Add tests that use a 1,000 × 400-point canvas and assert an artwork width of 60 points, left and bottom edges of 10 points, the SVG aspect ratio `239.4587 / 51.3128`, and a hit target of at least 44 × 44 points contained by the canvas. Add a narrow-canvas test that confirms the hit target is clamped inside the available bounds without changing `artworkFrame`.
+Add typography assertions that a segment's visible inset is greater than the 1% advance inset and that `08` sits farther inward than `00`. Add logo tests that use a 1,000 × 400-point canvas and assert an artwork width of 80 points, equal 30-point left and bottom insets, the SVG aspect ratio `239.4587 / 51.3128`, and a hit target of at least 44 × 44 points contained by the canvas. Add a narrow-canvas test that confirms the hit target is clamped inside the available bounds without changing `artworkFrame`.
 
 ```swift
 @Suite("EVERYWOW logo layout")
 struct EverywowLogoLayoutTests {
-    @Test("Artwork uses six percent width and equal one percent edge insets")
+    @Test("Artwork uses eight percent width and equal clock edge insets")
     func artworkGeometry() {
         let layout = EverywowLogoLayout(
-            availableSize: CGSize(width: 1_000, height: 400)
+            availableSize: CGSize(width: 1_000, height: 400),
+            edgeInset: 30
         )
 
-        #expect(abs(layout.artworkFrame.width - 60) < 0.000_001)
-        #expect(abs(layout.artworkFrame.minX - 10) < 0.000_001)
-        #expect(abs(layout.artworkFrame.maxY - 390) < 0.000_001)
+        #expect(abs(layout.artworkFrame.width - 80) < 0.000_001)
+        #expect(abs(layout.artworkFrame.minX - 30) < 0.000_001)
+        #expect(abs(layout.artworkFrame.maxY - 370) < 0.000_001)
         #expect(
             abs(
                 layout.artworkFrame.width / layout.artworkFrame.height
@@ -68,11 +70,12 @@ struct EverywowLogoLayoutTests {
     @Test("Hit target clamps to bounds without moving artwork")
     func hitTargetClamping() {
         let layout = EverywowLogoLayout(
-            availableSize: CGSize(width: 100, height: 60)
+            availableSize: CGSize(width: 100, height: 60),
+            edgeInset: 3
         )
 
-        #expect(abs(layout.artworkFrame.minX - 1) < 0.000_001)
-        #expect(abs(layout.artworkFrame.maxY - 59) < 0.000_001)
+        #expect(abs(layout.artworkFrame.minX - 3) < 0.000_001)
+        #expect(abs(layout.artworkFrame.maxY - 57) < 0.000_001)
         #expect(layout.hitTargetFrame.minX == 0)
         #expect(layout.hitTargetFrame.maxY == 60)
     }
@@ -89,28 +92,28 @@ Expected: compilation fails because `EverywowLogoLayout` does not exist.
 
 Create an immutable layout value with named constants for the requested dimensions. Calculate the artwork at the exact requested frame. Calculate the hit target around the artwork center, limit its size to the available size, and clamp its center so the target stays within bounds.
 
+Extend `ClockTypography.Metrics` with `segmentLeadingInkInsets`. Build every two-digit segment's glyph path at the reference size and store each visible leading bound. Implement `mainInkLeadingInset(availableWidth:metrics:leadingSegment:)` as the 1% advance inset plus the selected segment's scaled visible leading bound.
+
 ```swift
 import CoreGraphics
 
 struct EverywowLogoLayout: Equatable, Sendable {
     static let artworkAspectRatio: CGFloat = 239.4587 / 51.3128
-    static let artworkWidthFraction: CGFloat = 0.06
-    static let edgeInsetFraction: CGFloat = 0.01
+    static let artworkWidthFraction: CGFloat = 0.08
     static let minimumHitTargetSize: CGFloat = 44
 
     let availableSize: CGSize
     let artworkFrame: CGRect
     let hitTargetFrame: CGRect
 
-    init(availableSize: CGSize) {
+    init(availableSize: CGSize, edgeInset: CGFloat) {
         self.availableSize = availableSize
 
-        let inset = availableSize.width * Self.edgeInsetFraction
         let artworkWidth = availableSize.width * Self.artworkWidthFraction
         let artworkHeight = artworkWidth / Self.artworkAspectRatio
         artworkFrame = CGRect(
-            x: inset,
-            y: availableSize.height - inset - artworkHeight,
+            x: edgeInset,
+            y: availableSize.height - edgeInset - artworkHeight,
             width: artworkWidth,
             height: artworkHeight
         )
@@ -167,7 +170,7 @@ Expected: all `EWClockTests` pass.
 
 **Interfaces:**
 - Consumes: `EverywowLogoLayout`, the `EverywowLogo` asset, and `Binding<Bool>`.
-- Produces: `EverywowLogoView(onDismiss: @escaping () -> Void)` and `ClockView(isLogoVisible: Binding<Bool>, metrics: ClockTypography.Metrics, now: Date)`.
+- Produces: `EverywowLogoView(edgeInset: CGFloat, onDismiss: @escaping () -> Void)` and `ClockView(isLogoVisible: Binding<Bool>, metrics: ClockTypography.Metrics, now: Date)`.
 
 - [ ] **Step 1: Add the supplied SVG as a universal vector image set**
 
@@ -193,17 +196,21 @@ Copy `/Users/steffi/Library/CloudStorage/GoogleDrive-steffi@everywow.ch/Shared d
 
 - [ ] **Step 2: Build the logo overlay from independent artwork and hit-target frames**
 
-Use a `GeometryReader` and `EverywowLogoLayout`. Draw `Image("EverywowLogo")` at `artworkFrame`. Place a plain, transparent `Button` at `hitTargetFrame`, label it “Hide EVERYWOW logo” for accessibility, and call `onDismiss` without animation.
+Use a `GeometryReader` and `EverywowLogoLayout`. Draw `Image("EverywowLogo")` at `artworkFrame`. Place a plain, transparent, non-focusable `Button` at `hitTargetFrame`, label it “Hide EVERYWOW logo” for accessibility, and call `onDismiss` without animation.
 
 ```swift
 import SwiftUI
 
 struct EverywowLogoView: View {
+    let edgeInset: CGFloat
     let onDismiss: () -> Void
 
     var body: some View {
         GeometryReader { geometry in
-            let layout = EverywowLogoLayout(availableSize: geometry.size)
+            let layout = EverywowLogoLayout(
+                availableSize: geometry.size,
+                edgeInset: edgeInset
+            )
 
             Image("EverywowLogo")
                 .resizable()
@@ -222,6 +229,8 @@ struct EverywowLogoView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .focusable(false)
+            .focusEffectDisabled()
             .accessibilityLabel("Hide EVERYWOW logo")
             .frame(
                 width: layout.hitTargetFrame.width,
@@ -238,7 +247,7 @@ struct EverywowLogoView: View {
 
 - [ ] **Step 3: Overlay the logo without changing clock geometry**
 
-Add `@Binding private var isLogoVisible: Bool` to `ClockView`. Add `isLogoVisible: Binding<Bool>` as the first initializer parameter and assign `_isLogoVisible = isLogoVisible`. Place `EverywowLogoView { isLogoVisible = false }` after the timeline in a `ZStack`. Keep the outer black background and safe-area behavior unchanged.
+Add `@Binding private var isLogoVisible: Bool` to `ClockView`. Add `isLogoVisible: Binding<Bool>` as the first initializer parameter and assign `_isLogoVisible = isLogoVisible`. Inside the existing timeline, measure the current hour's visible inset with `ClockTypography.mainInkLeadingInset(availableWidth:metrics:leadingSegment:)`, then pass it to `EverywowLogoView`. Place the logo after the clock in a `ZStack` and set `isLogoVisible = false` in its dismiss closure. Keep the outer black background and safe-area behavior unchanged.
 
 - [ ] **Step 4: Own visibility for the app session on both platforms**
 
@@ -266,7 +275,7 @@ Expected: unit tests and platform build checks pass.
 
 - [ ] **Step 1: Update the durable product rules**
 
-Replace “Show only the current local time” with wording that also allows the bottom-left EVERYWOW logo. Replace the blanket control and gesture prohibition with a narrow rule that permits only tapping or clicking the logo to hide it for the current app session. Record the asset path and the 6% width and 1% equal-inset calculations.
+Replace “Show only the current local time” with wording that also allows the bottom-left EVERYWOW logo. Replace the blanket control and gesture prohibition with a narrow rule that permits only tapping or clicking the logo to hide it for the current app session. Record the asset path, logo width, visible clock inset calculation, and disabled focus border.
 
 - [ ] **Step 2: Check the finished diff**
 
@@ -276,7 +285,7 @@ Expected: no whitespace errors.
 
 Run: `git status --short`
 
-Expected: only the logo feature files and the pre-existing generated-project build-number change are present. The implementation-plan file is already committed before execution.
+Expected: only the logo feature files, the updated design and plan, and the pre-existing generated-project build-number change are present.
 
 - [ ] **Step 3: Run the full verification again**
 

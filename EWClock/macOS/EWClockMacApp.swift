@@ -4,6 +4,7 @@ import SwiftUI
 @main
 struct EWClockMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    @State private var isLogoVisible = true
 
     init() {
         try! BrandFont.register()
@@ -11,7 +12,7 @@ struct EWClockMacApp: App {
 
     var body: some Scene {
         Window("EW Clock", id: "clock") {
-            ClockView()
+            ClockView(isLogoVisible: $isLogoVisible)
                 .toolbarVisibility(.hidden, for: .windowToolbar)
         }
         .defaultSize(width: 1_000, height: 400)

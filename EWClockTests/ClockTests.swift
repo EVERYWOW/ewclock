@@ -91,6 +91,25 @@ struct ClockTypographyTests {
                 < 0.000_001
         )
         #expect(
+            ClockTypography.mainInkLeadingInset(
+                availableWidth: availableWidth,
+                metrics: metrics,
+                leadingSegment: "08"
+            ) > (0.01 * availableWidth)
+        )
+        #expect(
+            ClockTypography.mainInkLeadingInset(
+                availableWidth: availableWidth,
+                metrics: metrics,
+                leadingSegment: "08"
+            )
+                > ClockTypography.mainInkLeadingInset(
+                    availableWidth: availableWidth,
+                    metrics: metrics,
+                    leadingSegment: "00"
+                )
+        )
+        #expect(
             abs(
                 layout.blockHeight
                     - (
@@ -227,5 +246,45 @@ struct ClockTypographyTests {
         let line = CTLineCreateWithAttributedString(attributedText)
 
         return CTLineGetTypographicBounds(line, nil, nil, nil)
+    }
+}
+
+@Suite("EVERYWOW logo layout")
+struct EverywowLogoLayoutTests {
+    @Test("Artwork uses eight percent width and equal clock edge insets")
+    func artworkGeometry() {
+        let layout = EverywowLogoLayout(
+            availableSize: CGSize(width: 1_000, height: 400),
+            edgeInset: 30
+        )
+
+        #expect(abs(layout.artworkFrame.width - 80) < 0.000_001)
+        #expect(abs(layout.artworkFrame.minX - 30) < 0.000_001)
+        #expect(abs(layout.artworkFrame.maxY - 370) < 0.000_001)
+        #expect(
+            abs(
+                layout.artworkFrame.width / layout.artworkFrame.height
+                    - EverywowLogoLayout.artworkAspectRatio
+            ) < 0.000_001
+        )
+        #expect(layout.hitTargetFrame.width >= 44)
+        #expect(layout.hitTargetFrame.height >= 44)
+        #expect(
+            CGRect(origin: .zero, size: layout.availableSize)
+                .contains(layout.hitTargetFrame)
+        )
+    }
+
+    @Test("Hit target clamps to bounds without moving artwork")
+    func hitTargetClamping() {
+        let layout = EverywowLogoLayout(
+            availableSize: CGSize(width: 100, height: 60),
+            edgeInset: 3
+        )
+
+        #expect(abs(layout.artworkFrame.minX - 3) < 0.000_001)
+        #expect(abs(layout.artworkFrame.maxY - 57) < 0.000_001)
+        #expect(layout.hitTargetFrame.minX == 0)
+        #expect(layout.hitTargetFrame.maxY == 60)
     }
 }
