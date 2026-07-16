@@ -13,7 +13,9 @@ struct EWClockMacApp: App {
     var body: some Scene {
         Window("EW Clock", id: "clock") {
             ClockView(isLogoVisible: $isLogoVisible)
-                .toolbarVisibility(.hidden, for: .windowToolbar)
+                .toolbar(removing: .title)
+                .toolbarVisibility(.visible, for: .windowToolbar)
+                .toolbarBackgroundVisibility(.hidden, for: .windowToolbar)
         }
         .defaultSize(width: 1_000, height: 400)
     }
@@ -22,12 +24,15 @@ struct EWClockMacApp: App {
 @MainActor
 private final class AppDelegate: NSObject, NSApplicationDelegate {
     private let displaySleepController = MacDisplaySleepController()
+    private let windowControlsController = MacWindowControlsController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         displaySleepController.start()
+        windowControlsController.start()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        windowControlsController.stop()
         displaySleepController.stop()
     }
 }
