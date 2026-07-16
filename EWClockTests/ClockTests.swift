@@ -288,3 +288,62 @@ struct EverywowLogoLayoutTests {
         #expect(layout.hitTargetFrame.maxY == 60)
     }
 }
+
+@Suite("Mac window control visibility")
+struct WindowControlVisibilityStateTests {
+    @Test("Controls start hidden and hide two seconds after activity")
+    func inactivityDeadline() {
+        var state = WindowControlVisibilityState()
+
+        #expect(!state.isVisible)
+        state.recordPointerActivity(at: .zero)
+        #expect(state.isVisible)
+        #expect(state.nextHideDeadline == .seconds(2))
+
+        state.update(at: .seconds(1.999))
+        #expect(state.isVisible)
+        state.update(at: .seconds(2))
+        #expect(!state.isVisible)
+    }
+
+    @Test("New activity replaces the pending deadline")
+    func repeatedActivity() {
+        var state = WindowControlVisibilityState()
+        state.recordPointerActivity(at: .zero)
+        state.recordPointerActivity(at: .seconds(1))
+        state.update(at: .seconds(2))
+        #expect(state.isVisible)
+        state.update(at: .seconds(3))
+        #expect(!state.isVisible)
+    }
+
+    @Test("Hover keeps controls visible and leaving restarts the deadline")
+    func controlHover() {
+        var state = WindowControlVisibilityState()
+        state.recordPointerActivity(at: .zero)
+        state.setPointerOverControl(true, at: .seconds(1))
+        state.update(at: .seconds(5))
+        #expect(state.isVisible)
+        #expect(state.nextHideDeadline == nil)
+
+        state.setPointerOverControl(false, at: .seconds(5))
+        #expect(state.nextHideDeadline == .seconds(7))
+        state.update(at: .seconds(7))
+        #expect(!state.isVisible)
+    }
+
+    @Test("Pointer exit clears control hover and teardown resets state")
+    func exitAndReset() {
+        var state = WindowControlVisibilityState()
+        state.recordPointerActivity(at: .zero)
+        state.setPointerOverControl(true, at: .seconds(1))
+        state.pointerExitedWindow(at: .seconds(2))
+        #expect(state.nextHideDeadline == .seconds(4))
+        state.update(at: .seconds(4))
+        #expect(!state.isVisible)
+
+        state.recordPointerActivity(at: .seconds(5))
+        state.reset()
+        #expect(state == WindowControlVisibilityState())
+    }
+}

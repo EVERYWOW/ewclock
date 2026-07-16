@@ -86,6 +86,7 @@ targets:
     sources:
       - path: EWClockTests
       - path: EWClock/Shared
+      - path: EWClock/macOS/WindowControlVisibilityState.swift
       - path: EWClock/Resources/EVERYWOWDisplayVF.ttf
         buildPhase: resources
     settings:
