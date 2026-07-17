@@ -8,9 +8,9 @@ Built by the [EVERYWOW video production team](https://everywow.ch).
 
 ![EW Clock set clock running on an iPad in landscape orientation](docs/screenshots/ew-clock-ipad-landscape.png)
 
-## For Productions
+## For Video Productions
 
-EW Clock grew from a simple need on stages and film sets: show the current time clearly without demanding anyone’s attention.
+EW Clock grew from a simple need on stages and film sets: show the current time clearly without demanding attention.
 
 - No frills. The app opens directly to the clock and has no settings to manage during a production.
 - The screen stays awake while the clock is active.
@@ -37,13 +37,13 @@ An App Store release is planned. This public repository contains the current iPh
 
 ## About EVERYWOW
 
-EW Clock came out of the production work at [EVERYWOW](https://everywow.ch). We’re communicators who produce video. We prepare leaders and experts for the camera, run shoots and livestreams, and edit the finished videos.
+EW Clock came out of the video production work at [EVERYWOW](https://everywow.ch). We’re a full-service communication and video agency. We prepare leaders and experts for the camera, run video productions and livestreams, and edit the finished videos.
 
 Planning a corporate video, filmed event, livestream, or studio? Meet the [EVERYWOW video production team](https://everywow.ch).
 
 ## Build Locally
 
-EW Clock requires iOS, iPadOS, or macOS 26.0 or later. The project uses SwiftUI, Swift 6, Xcode 26, and [XcodeGen](https://github.com/yonaskolb/XcodeGen). `project.yml` is the source of truth for the generated Xcode project.
+EW Clock requires iOS, iPadOS, or macOS 26.0 or later.
 
 Generate the project:
 
