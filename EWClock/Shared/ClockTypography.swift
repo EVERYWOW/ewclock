@@ -156,23 +156,46 @@ enum ClockTypography {
             .segmentLeadingInkInsets[leadingSegment] else {
             preconditionFailure("The leading segment must contain ASCII digits")
         }
-        let layout = layout(
-            availableWidth: availableWidth,
-            metrics: metrics
-        )
-        let advanceInset = (availableWidth - layout.mainRunWidth) / 2
-        let scale = layout.mainFontSize / metrics.referenceSize
-
-        return advanceInset + (referenceInkInset * scale)
-    }
-
-    static func layout(availableWidth: CGFloat, metrics: Metrics) -> Layout {
         let mainFontSize = mainFontSize(
             availableWidth: availableWidth,
             metrics: metrics
         )
-        let secondsFontSize = mainFontSize * (2.0 / 3.0)
+        let scale = mainFontSize / metrics.referenceSize
+        let mainRunWidth = metrics.mainReferenceAdvance * scale
+        let advanceInset = (availableWidth - mainRunWidth) / 2
+
+        return advanceInset + (referenceInkInset * scale)
+    }
+
+    static func layout(availableSize: CGSize, metrics: Metrics) -> Layout {
+        precondition(
+            availableSize.height >= 0,
+            "Available height cannot be negative"
+        )
+        precondition(
+            metrics.ascent + metrics.descent > 0,
+            "Reference line height must be positive"
+        )
+
+        let mainFontSize = mainFontSize(
+            availableWidth: availableSize.width,
+            metrics: metrics
+        )
+        let normalSecondsFontSize = mainFontSize * (2.0 / 3.0)
         let mainScale = mainFontSize / metrics.referenceSize
+        let lineGap = mainFontSize * 0.1
+        let referenceLineHeight = metrics.ascent + metrics.descent
+        let mainLineHeight = referenceLineHeight * mainScale
+        let allowedSecondsLineHeight = max(
+            0,
+            (0.9 * availableSize.height) - mainLineHeight - lineGap
+        )
+        let heightLimitedSecondsFontSize = metrics.referenceSize
+            * (allowedSecondsLineHeight / referenceLineHeight)
+        let secondsFontSize = min(
+            normalSecondsFontSize,
+            heightLimitedSecondsFontSize
+        )
         let secondsScale = secondsFontSize / metrics.referenceSize
 
         return Layout(
@@ -185,7 +208,7 @@ enum ClockTypography {
             mainDescent: metrics.descent * mainScale,
             secondsAscent: metrics.ascent * secondsScale,
             secondsDescent: metrics.descent * secondsScale,
-            lineGap: mainFontSize * 0.1
+            lineGap: lineGap
         )
     }
 
@@ -198,11 +221,6 @@ enum ClockTypography {
         let mainFont = CTFontCreateWithName(
             fontName as CFString,
             layout.mainFontSize,
-            nil
-        )
-        let secondsFont = CTFontCreateWithName(
-            fontName as CFString,
-            layout.secondsFontSize,
             nil
         )
         let path = CGMutablePath()
@@ -232,14 +250,21 @@ enum ClockTypography {
             )
         }
 
-        let secondsSlot = layout.secondsSlot(seconds: time.seconds)
-        append(
-            secondsSlot.text,
-            centeredAt: secondsOriginX + secondsSlot.centerX,
-            baselineY: secondsBaselineY,
-            font: secondsFont,
-            to: path
-        )
+        if layout.secondsFontSize > 0 {
+            let secondsFont = CTFontCreateWithName(
+                fontName as CFString,
+                layout.secondsFontSize,
+                nil
+            )
+            let secondsSlot = layout.secondsSlot(seconds: time.seconds)
+            append(
+                secondsSlot.text,
+                centeredAt: secondsOriginX + secondsSlot.centerX,
+                baselineY: secondsBaselineY,
+                font: secondsFont,
+                to: path
+            )
+        }
 
         return path
     }

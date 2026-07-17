@@ -31,7 +31,7 @@ struct ClockView: View {
                 ZStack {
                     clockRun(
                         time: time,
-                        availableWidth: geometry.size.width
+                        availableSize: geometry.size
                     )
                     .frame(
                         width: geometry.size.width,
@@ -66,10 +66,10 @@ struct ClockView: View {
 
     private func clockRun(
         time: ClockTime,
-        availableWidth: CGFloat
+        availableSize: CGSize
     ) -> some View {
         let layout = ClockTypography.layout(
-            availableWidth: availableWidth,
+            availableSize: availableSize,
             metrics: metrics
         )
 

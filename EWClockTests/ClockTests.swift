@@ -72,7 +72,7 @@ struct ClockTypographyTests {
 
         let availableWidth = 1_200.0
         let layout = ClockTypography.layout(
-            availableWidth: availableWidth,
+            availableSize: CGSize(width: availableWidth, height: 1_000),
             metrics: metrics
         )
 
@@ -118,6 +118,94 @@ struct ClockTypographyTests {
                             + layout.secondsLineHeight
                     )
             ) < 0.000_001
+        )
+    }
+
+    @Test("Seconds shrink to preserve vertical margins")
+    func heightLimitedSeconds() throws {
+        try BrandFont.register()
+        let metrics = ClockTypography.metrics(
+            fontName: BrandFont.postScriptName,
+            referenceSize: 100
+        )
+        let unconstrained = ClockTypography.layout(
+            availableSize: CGSize(width: 1_200, height: 1_000),
+            metrics: metrics
+        )
+
+        #expect(
+            abs(
+                unconstrained.secondsFontSize
+                    - ((2.0 / 3.0) * unconstrained.mainFontSize)
+            ) < 0.000_001
+        )
+
+        let halfSecondsHeight = unconstrained.secondsLineHeight / 2
+        let constrainedHeight = (
+            unconstrained.mainLineHeight
+                + unconstrained.lineGap
+                + halfSecondsHeight
+        ) / 0.9
+        let constrained = ClockTypography.layout(
+            availableSize: CGSize(
+                width: 1_200,
+                height: constrainedHeight
+            ),
+            metrics: metrics
+        )
+
+        #expect(
+            abs(
+                constrained.secondsFontSize
+                    - (unconstrained.secondsFontSize / 2)
+            ) < 0.000_001
+        )
+        #expect(
+            abs(constrained.blockHeight - (0.9 * constrainedHeight))
+                < 0.000_001
+        )
+        #expect(
+            abs(
+                constrained.blockOriginY(canvasHeight: constrainedHeight)
+                    - (0.05 * constrainedHeight)
+            ) < 0.000_001
+        )
+
+        let secondsFreeHeight = (
+            unconstrained.mainLineHeight + unconstrained.lineGap
+        ) / 0.9 - 1
+        let secondsFree = ClockTypography.layout(
+            availableSize: CGSize(
+                width: 1_200,
+                height: secondsFreeHeight
+            ),
+            metrics: metrics
+        )
+
+        #expect(secondsFree.secondsFontSize == 0)
+        #expect(secondsFree.secondsLineHeight == 0)
+
+        let time = ClockTime(
+            date: Date(timeIntervalSince1970: 0),
+            timeZone: TimeZone(secondsFromGMT: 0)!
+        )
+        let canvasSize = CGSize(
+            width: 1_200,
+            height: secondsFreeHeight
+        )
+        let path = ClockTypography.glyphPath(
+            time: time,
+            layout: secondsFree,
+            canvasSize: canvasSize,
+            fontName: BrandFont.postScriptName
+        )
+        let mainLineMaxY = secondsFree.blockOriginY(
+            canvasHeight: canvasSize.height
+        ) + secondsFree.mainLineHeight
+
+        #expect(!path.isEmpty)
+        #expect(
+            path.boundingBoxOfPath.maxY <= mainLineMaxY + 0.000_001
         )
     }
 
@@ -171,7 +259,7 @@ struct ClockTypographyTests {
             referenceSize: 100
         )
         let layout = ClockTypography.layout(
-            availableWidth: 1_000,
+            availableSize: CGSize(width: 1_000, height: 1_000),
             metrics: metrics
         )
         let expectedCenters = layout
