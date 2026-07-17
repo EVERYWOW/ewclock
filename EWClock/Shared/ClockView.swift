@@ -29,10 +29,7 @@ struct ClockView: View {
                 let time = ClockTime(date: context.date)
 
                 ZStack {
-                    clockRun(
-                        time: time,
-                        availableSize: geometry.size
-                    )
+                    clockRun(time: time)
                     .frame(
                         width: geometry.size.width,
                         height: geometry.size.height,
@@ -64,16 +61,12 @@ struct ClockView: View {
 #endif
     }
 
-    private func clockRun(
-        time: ClockTime,
-        availableSize: CGSize
-    ) -> some View {
-        let layout = ClockTypography.layout(
-            availableSize: availableSize,
-            metrics: metrics
-        )
-
+    private func clockRun(time: ClockTime) -> some View {
         return Canvas { context, size in
+            let layout = ClockTypography.layout(
+                availableSize: size,
+                metrics: metrics
+            )
             let glyphPath = ClockTypography.glyphPath(
                 time: time,
                 layout: layout,

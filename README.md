@@ -31,9 +31,9 @@ A white bar along the top shows elapsed time in the current hour. A second bar a
 
 On iPhone and iPad, EW Clock supports portrait and landscape. On Mac, it runs in a normal resizable window. Tap or click the EVERYWOW logo to hide it for the rest of the current app session.
 
-## App Store Release
+## TestFlight
 
-An App Store release is planned. This public repository contains the current iPhone, iPad, and Mac source code.
+EW Clock is currently available to EVERYWOW’s internal testers through TestFlight for iPhone, iPad, and Mac. A public App Store release is planned. This repository contains the current source code for all three platforms.
 
 ## About EVERYWOW
 
