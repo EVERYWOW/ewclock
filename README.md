@@ -63,8 +63,8 @@ Run unit tests and platform build checks:
 ./script/test.sh
 ```
 
-## Font License
+## License
 
-The bundled EVERYWOW Display font is authorized only for EVERYWOW’s app. Its presence in this public repository does not grant permission to use it elsewhere.
+Except for the proprietary assets listed in [ASSET-LICENSE.md](ASSET-LICENSE.md), this repository is © 2026 EVERYWOW AG and licensed under the [GNU General Public License version 3](LICENSE), with the SPDX identifier `GPL-3.0-only`.
 
-© 2026 EVERYWOW AG
+The EVERYWOW Display font, EVERYWOW logos, app icon, and branded images are not covered by the GNU General Public License. Replace them before redistributing the source or a modified build unless you have separate permission to use them.
