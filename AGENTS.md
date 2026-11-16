@@ -32,7 +32,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Apple team: EVERYWOW AG (`L69664DD39`)
 - Initial release: version `1.0`
 - Initial build number: `1`
-- Current internal TestFlight release: version `1.0`, build `2`
+- Current internal TestFlight release: version `1.0`, build `6`
 - Internal TestFlight group: `EVERYWOW Internal`
 - Internal TestFlight testers: `apps@everywow.ch`, `production@everywow.ch`
 - TestFlight feedback and beta-review email: `apps@everywow.ch`
@@ -62,7 +62,9 @@ Stefanie works across computers. Keep `main` synchronized and preserve unrelated
 ## Release Rules
 
 - Build with the current installed stable Xcode accepted by App Store Connect.
-- Use automatic signing with team `L69664DD39`. On 15 July 2026, this Mac had valid EVERYWOW development and distribution identities. Recheck before release with `security find-identity -v -p codesigning`.
+- Authenticate every App Store Connect operation with the EVERYWOW App Store Connect API key, not the Apple ID signed into Xcode. `script/asc_env.sh` reads `ASC_KEY_ID` and `ASC_ISSUER_ID` from the environment or from the untracked file `~/.appstoreconnect/ewclock.env`, and the private key from `~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8`. On a new computer, copy both files there. Never commit the key ID, issuer ID, or key file to this public repository.
+- Use cloud-managed signing with team `L69664DD39`. `./script/archive.sh` archives iOS unsigned and macOS ad hoc, then the API-key export applies Apple Distribution signing. Releases do not need local development or distribution identities in the keychain.
+- Use `script/asc_api.rb METHOD PATH [JSON]` (after `source script/asc_env.sh` in bash) for App Store Connect API checks, such as build processing state and TestFlight group membership.
 - Verify the installed Xcode version is accepted by App Store Connect before each release. Do not treat the version used for the first release as a permanent requirement.
 - Use one App Store Connect app record with separate iPhone/iPad and Mac builds.
 - Increase `CURRENT_PROJECT_VERSION` for every uploaded build.
@@ -72,13 +74,13 @@ Stefanie works across computers. Keep `main` synchronized and preserve unrelated
 
 ## Current TestFlight State
 
-As of 15 July 2026:
+As of 16 November 2026:
 
 - App Store Connect record `EW Clock` exists with Apple ID `6791122125` for iOS/iPadOS and macOS.
-- Version `1.0`, builds `1` and `2` uploaded successfully for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`.
-- Build `2` is the current two-line release: `HH:MM` uses 98% width and `SS` is centered underneath at two-thirds size.
-- The internal group `EVERYWOW Internal` has automatic distribution enabled, contains builds `1` and `2` for both platforms, and has `apps@everywow.ch` and `production@everywow.ch` as internal testers. Both build `2` entries show `Testing`.
-- The former external group `EVERYWOW Public Beta` was removed, its public link was disabled, and both platform builds were withdrawn from TestFlight Beta App Review. Their external status is `Ready to Submit`, while they remain immediately available to the internal group.
+- Version `1.0`, builds `1` through `6` were uploaded for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`. Builds `1` through `4` have expired.
+- Build `6` is the latest build and was the first uploaded with the App Store Connect API key and cloud-managed signing. Both platform builds finished processing as `VALID` and show `IN_BETA_TESTING` internally.
+- The internal group `EVERYWOW Internal` has access to all builds, contains builds `1` through `6` for both platforms, and has `apps@everywow.ch` and `production@everywow.ch` as internal testers.
+- The external group `EVERYWOW Public Beta` exists with an enabled public link that is listed in `README.md`. It contains only the expired build `4`. Builds `5` and `6` were not submitted to TestFlight Beta App Review, and their external status is `READY_FOR_BETA_SUBMISSION`.
 - Nothing has been submitted to App Store review or configured for App Store release.
 
 The approved design is in `docs/superpowers/specs/2026-07-15-ew-clock-design.md`.

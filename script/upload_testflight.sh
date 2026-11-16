@@ -10,6 +10,9 @@ IOS_ARCHIVE="$ARCHIVE_DIR/EWClock-iOS.xcarchive"
 MACOS_ARCHIVE="$ARCHIVE_DIR/EWClock-macOS.xcarchive"
 PLATFORM="${1:-all}"
 
+# shellcheck source=script/asc_env.sh
+source "$ROOT_DIR/script/asc_env.sh"
+
 mkdir -p "$UPLOAD_DIR"
 
 upload_archive() {
@@ -28,7 +31,8 @@ upload_archive() {
     -archivePath "$archive" \
     -exportPath "$output" \
     -exportOptionsPlist "$EXPORT_OPTIONS" \
-    -allowProvisioningUpdates
+    -allowProvisioningUpdates \
+    "${ASC_AUTH_ARGS[@]}"
 }
 
 case "$PLATFORM" in
