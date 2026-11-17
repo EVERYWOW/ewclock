@@ -140,7 +140,31 @@ sed -i '' -E "s/^( *CURRENT_PROJECT_VERSION: *)[0-9]+ *$/\1$BUILD/" project.yml
 
 run_step test ./script/test.sh
 run_step archive ./script/archive.sh
-run_step upload ./script/upload_testflight.sh all
+# App Store Connect regularly answers with transient HTTP 500 errors. Upload
+# each platform separately and retry with the same build number. A platform
+# is skipped once App Store Connect lists it, which also covers a 500 that
+# arrives after the upload itself succeeded.
+upload_platform() {
+  local platform="$1" asc_platform="$2" attempt
+  for attempt in 1 2 3 4; do
+    if [[ "$(build_states "$BUILD" || true)" == *"$asc_platform="* ]]; then
+      echo "    $platform build $BUILD is in App Store Connect"
+      return 0
+    fi
+    echo "==> upload $platform (attempt $attempt)"
+    if ./script/upload_testflight.sh "$platform" >"$LOG_DIR/upload-$platform-$attempt.log" 2>&1; then
+      return 0
+    fi
+    grep -E "error:|status code" "$LOG_DIR/upload-$platform-$attempt.log" | tail -3 | sed 's/^/    /' || true
+    if (( attempt < 4 )); then
+      echo "    retrying in 5 minutes"
+      sleep 300
+    fi
+  done
+  fail "Uploading $platform build $BUILD failed after 4 attempts"
+}
+upload_platform ios IOS
+upload_platform macos MAC_OS
 
 echo "==> Waiting for App Store Connect processing"
 deadline=$(( $(date +%s) + PROCESSING_TIMEOUT_SECONDS ))
