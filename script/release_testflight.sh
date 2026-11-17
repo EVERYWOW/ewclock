@@ -52,7 +52,7 @@ cleanup() {
   if [[ -n "$WORKTREE" && -d "$WORKTREE" ]]; then
     git -C "$ROOT_DIR" worktree remove --force "$WORKTREE" >/dev/null 2>&1 || true
   fi
-  rmdir "$LOCK_DIR" 2>/dev/null || true
+  rm -rf "$LOCK_DIR"
 }
 
 on_exit() {
@@ -65,12 +65,23 @@ on_exit() {
   fi
 }
 
-mkdir "$LOCK_DIR" 2>/dev/null || {
-  echo "Another release is running ($LOCK_DIR exists)."
-  echo "RESULT: FAILED"
-  exit 1
-}
+# The lock records the release's process ID. A lock whose process no longer
+# exists was left by a killed run and is taken over.
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+  lock_pid="$(cat "$LOCK_DIR/pid" 2>/dev/null || true)"
+  if [[ -n "$lock_pid" ]] && kill -0 "$lock_pid" 2>/dev/null; then
+    echo "Another release is running (process $lock_pid)."
+    echo "RESULT: FAILED"
+    exit 1
+  fi
+  echo "Taking over a stale release lock${lock_pid:+ from process $lock_pid}."
+  rm -rf "$LOCK_DIR"
+  mkdir "$LOCK_DIR" || { echo "Could not create $LOCK_DIR"; echo "RESULT: FAILED"; exit 1; }
+fi
+echo "$$" >"$LOCK_DIR/pid"
 trap on_exit EXIT
+trap 'exit 143' TERM
+trap 'exit 130' INT
 
 # shellcheck source=script/asc_env.sh
 source "$ROOT_DIR/script/asc_env.sh"
