@@ -32,7 +32,7 @@ Native SwiftUI set clock for iPhone, iPad, and Mac. The app targets iOS, iPadOS,
 - Apple team: EVERYWOW AG (`L69664DD39`)
 - Initial release: version `1.0`
 - Initial build number: `1`
-- Current internal TestFlight release: version `1.0`, build `6`
+- Current internal TestFlight release: version `1.0`. The latest build number is `CURRENT_PROJECT_VERSION` in `project.yml`.
 - Internal TestFlight group: `EVERYWOW Internal`
 - Internal TestFlight testers: `apps@everywow.ch`, `production@everywow.ch`
 - TestFlight feedback and beta-review email: `apps@everywow.ch`
@@ -49,6 +49,7 @@ Never commit Apple credentials, App Store Connect keys, provisioning profiles, o
 - `./script/test.sh` runs unit tests and platform build checks. It and `./script/build_and_run.sh` sign local builds ad hoc through `script/local_signing.sh`, so they need no development certificate.
 - `./script/archive.sh` creates iOS and Mac archives and exports them with cloud-managed distribution signing.
 - `./script/upload_testflight.sh [all|ios|macos]` validates and uploads archives only when explicitly performing a release. The optional platform argument supports retrying one platform without duplicating an accepted upload.
+- `./script/release_testflight.sh [--if-older-than-days N]` performs a complete internal TestFlight release from `origin/main` in a temporary worktree. It picks the next build number, tests, archives, uploads, waits for processing, checks `EVERYWOW Internal`, and then commits and pushes the build-number bump. Logs are under `build/release-logs/`. The last output line is `RESULT: RELEASED`, `RESULT: SKIPPED`, or `RESULT: FAILED`.
 - Keep shared app code under `EWClock/Shared`, platform adapters under `EWClock/iOS` and `EWClock/macOS`, resources under `EWClock/Resources`, and tests under `EWClockTests`.
 
 ## Git Workflow
@@ -67,21 +68,20 @@ Stefanie works across computers. Keep `main` synchronized and preserve unrelated
 - Use `script/asc_api.rb METHOD PATH [JSON]` (after `source script/asc_env.sh` in bash) for App Store Connect API checks, such as build processing state and TestFlight group membership.
 - Verify the installed Xcode version is accepted by App Store Connect before each release. Do not treat the version used for the first release as a permanent requirement.
 - Use one App Store Connect app record with separate iPhone/iPad and Mac builds.
-- Increase `CURRENT_PROJECT_VERSION` for every uploaded build.
+- Increase `CURRENT_PROJECT_VERSION` for every uploaded build. `./script/release_testflight.sh` does this automatically.
+- A Paseo schedule named `EW Clock TestFlight release` runs every Tuesday at 02:00 Europe/Zurich with the `Sol Med` profile (`codex/gpt-6.1-sol`, full access, medium thinking). It runs `./script/release_testflight.sh --if-older-than-days 20`, so a new internal build ships every three weeks and a failed run retries the following week. This keeps the build process verified and the internal beta from expiring after 90 days. The scheduled agent only reports failures; it must not change code, certificates, testers, or App Store Connect settings.
 - Verify both uploaded builds finish processing before adding them to `EVERYWOW Internal`.
 - Internal testers must already be App Store Connect users. Ask before granting any new App Store Connect role solely to make someone eligible for internal testing.
 - EW Clock currently uses internal-only TestFlight distribution. External builds require TestFlight Beta App Review and must not be submitted unless Stefanie explicitly changes the distribution scope again.
 
 ## Current TestFlight State
 
-As of 16 November 2026:
+As of 17 November 2026:
 
 - App Store Connect record `EW Clock` exists with Apple ID `6791122125` for iOS/iPadOS and macOS.
-- Version `1.0`, builds `1` through `6` were uploaded for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`. Builds `1` through `4` have expired.
-- Build `6` is the latest build and was the first uploaded with the App Store Connect API key and cloud-managed signing. Both platform builds finished processing as `VALID` and show `IN_BETA_TESTING` internally.
-- The internal group `EVERYWOW Internal` has access to all builds, contains builds `1` through `6` for both platforms, and has `apps@everywow.ch` and `production@everywow.ch` as internal testers.
-- EW Clock is a private beta. On 17 November 2026, the public link of the external group `EVERYWOW Public Beta` was disabled and removed from `README.md`. The group has no testers and contains only the expired build `4`. Builds `5` and `6` were not submitted to TestFlight Beta App Review, and their external status is `READY_FOR_BETA_SUBMISSION`.
-- Stefanie's private Apple ID installs EW Clock by redeeming one of the two internal tester invitations. App Store Connect lists that tester under the invited EVERYWOW address.
+- Version `1.0` builds are uploaded for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`. Build `6` was the first uploaded with the App Store Connect API key and cloud-managed signing. Later builds come from the scheduled release. Builds older than 90 days expire.
+- The internal group `EVERYWOW Internal` has access to all builds and has `apps@everywow.ch` and `production@everywow.ch` as internal testers. Stefanie's private Apple ID installs EW Clock by redeeming one of these invitations. App Store Connect lists that tester under the invited EVERYWOW address.
+- EW Clock is a private beta. On 17 November 2026, the public link of the external group `EVERYWOW Public Beta` was disabled and removed from `README.md`. The group has no testers and contains only the expired build `4`. Newer builds were not submitted to TestFlight Beta App Review.
 - Nothing has been submitted to App Store review or configured for App Store release.
 
 The approved design is in `docs/superpowers/specs/2026-07-15-ew-clock-design.md`.
