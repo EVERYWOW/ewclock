@@ -33,7 +33,7 @@ On iPhone and iPad, EW Clock supports portrait and landscape. On Mac, it runs in
 
 ## TestFlight
 
-EW Clock is available as a public TestFlight beta for iPhone, iPad, and Mac. [Join the EW Clock beta](https://testflight.apple.com/join/BQGFNcwY) and help us test it on your devices.
+EW Clock is in a private TestFlight beta for iPhone, iPad, and Mac, available to EVERYWOW’s internal testers. A public App Store release is planned. This repository contains the current source code for all three platforms.
 
 ## About EVERYWOW
 

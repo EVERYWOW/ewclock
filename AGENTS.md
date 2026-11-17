@@ -46,8 +46,8 @@ Never commit Apple credentials, App Store Connect keys, provisioning profiles, o
 - `project.yml` is the source of truth. Generate the Xcode project with `xcodegen generate` and do not hand-edit the generated project.
 - Keep `CFBundleVersion` and `CFBundleShortVersionString` in both generated Info.plists bound to `$(CURRENT_PROJECT_VERSION)` and `$(MARKETING_VERSION)`. XcodeGen otherwise writes stale literal versions when only the build setting changes.
 - `./script/build_and_run.sh` builds and opens the Mac app.
-- `./script/test.sh` runs unit tests and platform build checks.
-- `./script/archive.sh` creates signed iOS and Mac archives for distribution.
+- `./script/test.sh` runs unit tests and platform build checks. It and `./script/build_and_run.sh` sign local builds ad hoc through `script/local_signing.sh`, so they need no development certificate.
+- `./script/archive.sh` creates iOS and Mac archives and exports them with cloud-managed distribution signing.
 - `./script/upload_testflight.sh [all|ios|macos]` validates and uploads archives only when explicitly performing a release. The optional platform argument supports retrying one platform without duplicating an accepted upload.
 - Keep shared app code under `EWClock/Shared`, platform adapters under `EWClock/iOS` and `EWClock/macOS`, resources under `EWClock/Resources`, and tests under `EWClockTests`.
 
@@ -80,7 +80,8 @@ As of 16 November 2026:
 - Version `1.0`, builds `1` through `6` were uploaded for iOS/iPadOS and macOS with `ITSAppUsesNonExemptEncryption = false`. Builds `1` through `4` have expired.
 - Build `6` is the latest build and was the first uploaded with the App Store Connect API key and cloud-managed signing. Both platform builds finished processing as `VALID` and show `IN_BETA_TESTING` internally.
 - The internal group `EVERYWOW Internal` has access to all builds, contains builds `1` through `6` for both platforms, and has `apps@everywow.ch` and `production@everywow.ch` as internal testers.
-- The external group `EVERYWOW Public Beta` exists with an enabled public link that is listed in `README.md`. It contains only the expired build `4`. Builds `5` and `6` were not submitted to TestFlight Beta App Review, and their external status is `READY_FOR_BETA_SUBMISSION`.
+- EW Clock is a private beta. On 17 November 2026, the public link of the external group `EVERYWOW Public Beta` was disabled and removed from `README.md`. The group has no testers and contains only the expired build `4`. Builds `5` and `6` were not submitted to TestFlight Beta App Review, and their external status is `READY_FOR_BETA_SUBMISSION`.
+- Stefanie's private Apple ID installs EW Clock by redeeming one of the two internal tester invitations. App Store Connect lists that tester under the invited EVERYWOW address.
 - Nothing has been submitted to App Store review or configured for App Store release.
 
 The approved design is in `docs/superpowers/specs/2026-07-15-ew-clock-design.md`.

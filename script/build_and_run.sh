@@ -30,12 +30,16 @@ esac
 
 pkill -x "$APP_NAME" >/dev/null 2>&1 || true
 
+# shellcheck source=script/local_signing.sh
+source "$ROOT_DIR/script/local_signing.sh"
+
 "$ROOT_DIR/script/generate.sh"
 xcodebuild \
   -project "$PROJECT" \
   -scheme EWClock-macOS \
   -destination 'platform=macOS' \
   -derivedDataPath "$DERIVED_DATA" \
+  "${LOCAL_SIGNING_ARGS[@]}" \
   build
 
 case "$MODE" in
