@@ -38,11 +38,13 @@ LOG_DIR="$ROOT_DIR/build/release-logs/$(date +%Y-%m-%d_%H-%M-%S)"
 mkdir -p "$LOG_DIR"
 LOCK_DIR="$ROOT_DIR/build/release.lock"
 WORKTREE=""
+RESULT_PRINTED=""
 
 fail() {
   echo "ERROR: $*" >&2
   echo "Logs: $LOG_DIR"
   echo "RESULT: FAILED"
+  RESULT_PRINTED=1
   exit 1
 }
 
@@ -53,12 +55,22 @@ cleanup() {
   rmdir "$LOCK_DIR" 2>/dev/null || true
 }
 
+on_exit() {
+  local status=$?
+  cleanup
+  if [[ $status -ne 0 && -z "$RESULT_PRINTED" ]]; then
+    echo "ERROR: unexpected failure (exit status $status)" >&2
+    echo "Logs: $LOG_DIR"
+    echo "RESULT: FAILED"
+  fi
+}
+
 mkdir "$LOCK_DIR" 2>/dev/null || {
   echo "Another release is running ($LOCK_DIR exists)."
   echo "RESULT: FAILED"
   exit 1
 }
-trap cleanup EXIT
+trap on_exit EXIT
 
 # shellcheck source=script/asc_env.sh
 source "$ROOT_DIR/script/asc_env.sh"
@@ -118,12 +130,24 @@ if [[ -n "$MIN_AGE_DAYS" ]]; then
   if (( AGE_DAYS < MIN_AGE_DAYS )); then
     echo "Newest build is $AGE_DAYS days old; release is due after $MIN_AGE_DAYS days."
     echo "RESULT: SKIPPED"
+    RESULT_PRINTED=1
     exit 0
   fi
   echo "Newest build is $AGE_DAYS days old; releasing."
 fi
 
-xcodebuild -version | head -1
+XCODE_VERSION="$(xcodebuild -version)" || fail "xcodebuild is not available"
+echo "${XCODE_VERSION%%$'\n'*}"
+
+# Remove release worktrees left behind by an interrupted run. The lock above
+# guarantees that no other release is using them.
+git -C "$ROOT_DIR" worktree list --porcelain |
+  sed -n 's/^worktree //p' |
+  grep '/ewclock-release\.' |
+  while read -r stale; do
+    git -C "$ROOT_DIR" worktree remove --force "$stale" || true
+  done || true
+git -C "$ROOT_DIR" worktree prune
 
 git -C "$ROOT_DIR" fetch --quiet origin main || fail "git fetch failed"
 WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/ewclock-release.XXXXXX")"
@@ -210,3 +234,4 @@ fi
 echo "Released version $VERSION build $BUILD for iOS/iPadOS and macOS to $INTERNAL_GROUP."
 echo "Logs: $LOG_DIR"
 echo "RESULT: RELEASED"
+RESULT_PRINTED=1
